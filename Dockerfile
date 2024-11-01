@@ -1,7 +1,9 @@
 FROM debian:bookworm
 
 COPY bt.sh /bt.sh
-COPY ["ssh_host_*","/etc/ssh/"]
+
+# 切换 Debian 镜像源为腾讯云源
+RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources
 
 # 设置构建参数
 ARG RANDOM_NAME
