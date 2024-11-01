@@ -20,10 +20,6 @@ RUN apt install -y wget iproute2 openssh-server libgd-dev cmake make gcc g++ aut
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable
 
-# 下载并执行 lib.sh 脚本
-RUN curl -o /www/server/panel/install/lib.sh https://download.bt.cn/install/0/lib.sh \
-    && sh /www/server/panel/install/lib.sh
-
 # 配置宝塔面板安全入口和用户名及密码
 RUN echo btpanel | bt 6 \
     && echo btpaneldocker | bt 5 \
