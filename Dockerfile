@@ -1,5 +1,7 @@
 FROM debian:bookworm
 
+USER root
+
 COPY bt.sh /bt.sh
 COPY ["ssh_host_*","/etc/ssh/"]
 
