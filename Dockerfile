@@ -1,7 +1,5 @@
 FROM debian:bookworm
 
-USER root
-
 COPY bt.sh /bt.sh
 COPY ["ssh_host_*","/etc/ssh/"]
 
@@ -17,6 +15,7 @@ RUN apt-get update \
     libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl \
     && curl -sSO http://download.bt.cn/install/install_panel.sh \
     && echo y|bash install_panel.sh -P 8888 --ssl-disable \
+    && curl -o /www/server/panel/install/lib.sh https://download.bt.cn/install/0/lib.sh && sh /www/server/panel/install/lib.sh \
     && echo btpanel|bt 6 \
     && echo btpaneldocker|bt 5 \
     && echo "/btpanel" > /www/server/panel/data/admin_path.pl \
