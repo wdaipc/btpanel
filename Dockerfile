@@ -2,30 +2,45 @@ FROM debian:bookworm
 
 COPY bt.sh /bt.sh
 
-# 切换 Debian 镜像源为腾讯云源
-RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources
-
 # 设置构建参数
 ARG RANDOM_NAME
 
 # 设置一个btd12-前缀的随机主机名
 RUN echo "btd12-${RANDOM_NAME}" > /etc/hostname
 
-# 更新包列表并安装前置依赖及宝塔面板
-RUN apt-get update \
-    && apt-get install -y wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
-    libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl \
-    && curl -sSO https://download.bt.cn/install/install_panel.sh \
-    && echo y|bash install_panel.sh -P 8888 --ssl-disable \
-    && curl -o /www/server/panel/install/lib.sh https://download.bt.cn/install/0/lib.sh && sh /www/server/panel/install/lib.sh \
-    && echo btpanel|bt 6 \
-    && echo btpaneldocker|bt 5 \
-    && echo "/btpanel" > /www/server/panel/data/admin_path.pl \
-    && echo "root:btpaneldocker" | chpasswd \
-    && chmod +x /bt.sh \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && echo "dk_lib_test_d12" > /www/server/panel/data/o.pl
+# 更新包列表
+RUN apt update
+RUN apt upgrade -y
+
+# 安装前置依赖
+RUN apt install -y wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
+    libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl
+
+# 下载并安装宝塔面板
+RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
+    && echo y | bash install_panel.sh -P 8888 --ssl-disable
+
+# 下载并执行 lib.sh 脚本
+RUN curl -o /www/server/panel/install/lib.sh https://download.bt.cn/install/0/lib.sh \
+    && sh /www/server/panel/install/lib.sh
+
+# 配置宝塔面板安全入口和用户名及密码
+RUN echo btpanel | bt 6 \
+    && echo btpaneldocker | bt 5 \
+    && echo "/btpanel" > /www/server/panel/data/admin_path.pl
+
+# 设置 root 用户密码
+RUN echo "root:btpaneldocker" | chpasswd
+
+# 赋予 bt.sh 可执行权限
+RUN chmod +x /bt.sh
+
+# 清理缓存
+RUN apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 设置标识文件
+RUN echo "dk_lib_test_d12" > /www/server/panel/data/o.pl
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 
