@@ -13,7 +13,7 @@ RUN echo "btd12-${RANDOM_NAME}" > /etc/hostname
 RUN apt-get update \
     && apt-get install -y wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
     libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl \
-    && curl -sSO http://download.bt.cn/install/install_panel.sh \
+    && curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y|bash install_panel.sh -P 8888 --ssl-disable \
     && curl -o /www/server/panel/install/lib.sh https://download.bt.cn/install/0/lib.sh && sh /www/server/panel/install/lib.sh \
     && echo btpanel|bt 6 \
