@@ -18,7 +18,7 @@ RUN apt-get update \
     && echo btpanel|bt 6 \
     && echo btpaneldocker|bt 5 \
     && echo "/btpanel" > /www/server/panel/data/admin_path.pl \
-    && echo btpaneldocker | passwd root --stdin \
+    && echo "root:btpaneldocker" | chpasswd \
     && chmod +x /bt.sh \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
