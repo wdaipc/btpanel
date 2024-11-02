@@ -23,6 +23,7 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+ENV LC_CTYPE en_US.UTF-8
 
 # 复制 bt.sh 文件
 COPY bt.sh /bt.sh
@@ -41,6 +42,9 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable
 
 # 安装 lnmp 环境
+# 创建目录
+RUN mkdir -p /lnmp
+
 # 安装 Nginx 1.27
 RUN curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
     && sh /lnmp/nginx.sh install 1.27
