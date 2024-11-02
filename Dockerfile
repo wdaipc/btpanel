@@ -18,8 +18,7 @@ RUN apt install -y \
     libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev
 
 # 配置区域设置
-RUN locale-gen en_US.UTF-8 \
-    && update-locale LANG=en_US.UTF-8
+RUN locale-gen en_US.UTF-8
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
