@@ -40,6 +40,32 @@ RUN echo "btd12-${RANDOM_NAME}" > /etc/hostname
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable
 
+# 安装 lnmp 环境
+# 安装 Nginx 1.27
+RUN curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
+    && sh /lnmp/nginx.sh install 1.27
+
+# 安装 PHP 8.3
+RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
+    && sh /lnmp/php.sh install 8.3
+
+# 安装 MySQL 8.0
+RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
+    && sh /lnmp/mysql.sh install 8.0
+
+# 安装 phpMyAdmin 5.2
+RUN curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/4/phpmyadmin.sh \
+    && sh /lnmp/phpmyadmin.sh install 5.2
+
+# 清理安装包
+RUN rm -rf /lnmp \
+    && rm -rf /www/server/php/83/src \
+    && rm -rf /www/server/mysql/mysql-test \
+    && rm -rf /www/server/mysql/src.tar.gz \
+    && rm -rf /www/server/mysql/src \
+    && rm -rf /www/server/data/* \
+    && rm -rf /www/server/nginx/src
+
 # 配置宝塔面板安全入口和用户名及密码
 RUN echo btpanel | bt 6 \
     && echo btpaneldocker | bt 5 \
