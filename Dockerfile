@@ -2,6 +2,9 @@ FROM debian:bookworm
 
 COPY bt.sh /bt.sh
 
+# 转换 bt.sh 文件的换行符
+RUN dos2unix /bt.sh
+
 # 设置构建参数
 ARG RANDOM_NAME
 
