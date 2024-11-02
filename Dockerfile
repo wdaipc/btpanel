@@ -8,6 +8,7 @@ RUN apt update && apt upgrade -y
 
 # 安装前置依赖
 RUN apt install -y \
+    locales \
     wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
     libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl dos2unix \
     build-essential re2c cron bzip2 libzip-dev libc6-dev bison file rcconf flex vim m4 gawk less cpp binutils \
@@ -15,6 +16,14 @@ RUN apt install -y \
     libltdl-dev zlib1g-dev libglib2.0-0 libglib2.0-dev libkrb5-dev libpq-dev libpq5 gettext libcap-dev \
     libc-client2007e-dev psmisc patch git e2fsprogs libxslt1-dev xz-utils libgd3 libwebp-dev libvpx-dev \
     libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev
+
+# 配置区域设置
+RUN locale-gen en_US.UTF-8 \
+    && update-locale LANG=en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # 复制 bt.sh 文件
 COPY bt.sh /bt.sh
