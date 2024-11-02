@@ -58,7 +58,8 @@ RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
     && sh /lnmp/mysql.sh install 8.0
 
 # 安装 phpMyAdmin 5.2
-RUN curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/4/phpmyadmin.sh \
+RUN /etc/init.d/nginx start \
+    && curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/4/phpmyadmin.sh \
     && sh /lnmp/phpmyadmin.sh install 5.2
 
 # 清理安装包
