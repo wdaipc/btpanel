@@ -1,5 +1,22 @@
 FROM debian:bookworm
 
+# 切换 Debian 镜像源为腾讯云源
+RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources
+
+# 更新包列表并升级系统中已经安装的软件包
+RUN apt update && apt upgrade -y
+
+# 安装前置依赖
+RUN apt install -y \
+    wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
+    libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl dos2unix \
+    build-essential re2c cron bzip2 libzip-dev libc6-dev bison file rcconf flex vim m4 gawk less cpp binutils \
+    diffutils unzip tar libbz2-dev libncurses5 libncurses5-dev libtool libevent-dev libssl-dev libsasl2-dev \
+    libltdl-dev zlib1g-dev libglib2.0-0 libglib2.0-dev libkrb5-dev libpq-dev libpq5 gettext libcap-dev \
+    libc-client2007e-dev psmisc patch git e2fsprogs libxslt1-dev xz-utils libgd3 libwebp-dev libvpx-dev \
+    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev
+
+# 复制 bt.sh 文件
 COPY bt.sh /bt.sh
 
 # 转换 bt.sh 文件的换行符
@@ -10,14 +27,6 @@ ARG RANDOM_NAME
 
 # 设置一个btd12-前缀的随机主机名
 RUN echo "btd12-${RANDOM_NAME}" > /etc/hostname
-
-# 更新包列表
-RUN apt update
-RUN apt upgrade -y
-
-# 安装前置依赖
-RUN apt install -y wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
-    libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl
 
 # 下载并安装宝塔面板
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
@@ -35,7 +44,7 @@ RUN echo "root:btpaneldocker" | chpasswd
 RUN chmod +x /bt.sh
 
 # 清理缓存
-RUN apt-get clean \
+RUN apt clean \
     && rm -rf /var/lib/apt/lists/*
 
 # 设置标识文件
