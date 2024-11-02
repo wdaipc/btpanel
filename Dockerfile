@@ -15,8 +15,7 @@ RUN apt install -y \
     diffutils unzip tar libbz2-dev libncurses5 libncurses5-dev libtool libevent-dev libssl-dev libsasl2-dev \
     libltdl-dev zlib1g-dev libglib2.0-0 libglib2.0-dev libkrb5-dev libpq-dev libpq5 gettext libcap-dev \
     libc-client2007e-dev psmisc patch git e2fsprogs libxslt1-dev xz-utils libgd3 libwebp-dev libvpx-dev \
-    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev
-
+    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev iptables firewalld
 # 配置区域设置
 RUN locale-gen en_US.UTF-8
 
@@ -45,20 +44,14 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
 # 创建目录
 RUN mkdir -p /lnmp
 
-# 安装 Nginx 1.27
+# 安装 Nginx 1.27, PHP 8.3, MySQL 8.0 和 phpMyAdmin 5.2
 RUN curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
-    && sh /lnmp/nginx.sh install 1.27
-
-# 安装 PHP 8.3
-RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
-    && sh /lnmp/php.sh install 8.3
-
-# 安装 MySQL 8.0
-RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
-    && sh /lnmp/mysql.sh install 8.0
-
-# 安装 phpMyAdmin 5.2
-RUN /etc/init.d/nginx start \
+    && sh /lnmp/nginx.sh install 1.27 \
+    && curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
+    && sh /lnmp/php.sh install 8.3 \
+    && curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
+    && sh /lnmp/mysql.sh install 8.0 \
+    && service nginx start \
     && curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/4/phpmyadmin.sh \
     && sh /lnmp/phpmyadmin.sh install 5.2
 
