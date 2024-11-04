@@ -31,13 +31,11 @@ lnmp:
         - docker
       env:
         IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:${CNB_BRANCH}-linux-arm64
-      docker:
-        build: arm64/Dockerfile
       stages:
         - name: docker login
           script: docker login -u ${CNB_TOKEN_USER_NAME} -p "${CNB_TOKEN}" ${CNB_DOCKER_REGISTRY}
         - name: docker build
-          script: docker build -t ${IMAGE_TAG} .
+          script: docker build -t ${IMAGE_TAG} -f ./arm64/Dockerfile ./arm64
         - name: docker push
           script: docker push ${IMAGE_TAG}
         - name: resolve
