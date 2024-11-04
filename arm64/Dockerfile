@@ -85,7 +85,7 @@ RUN apt clean \
     && rm -rf /var/lib/apt/lists/*
 
 # 设置标识文件
-RUN echo "dk_lib_test_d12" > /www/server/panel/data/o.pl
+RUN echo "docker_btlnmp_d12" > /www/server/panel/data/o.pl
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 
