@@ -58,6 +58,9 @@ RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
 
 # 确保 time.h 头文件被正确包含
 RUN echo '#include <time.h>' >> /usr/include/my_global.h
+RUN echo '#include <cstddef>' >> /usr/include/my_global.h
+RUN echo '#include <ctime>' >> /usr/include/my_global.h
+RUN echo '#include <stddef.h>' >> /usr/include/my_global.h
 
 # 安装 MySQL 5.7
 RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
