@@ -15,7 +15,7 @@ RUN apt install -y \
     diffutils unzip tar libbz2-dev libncurses5 libncurses5-dev libtool libevent-dev libssl-dev libsasl2-dev \
     libltdl-dev zlib1g-dev libglib2.0-0 libglib2.0-dev libkrb5-dev libpq-dev libpq5 gettext libcap-dev \
     libc-client2007e-dev psmisc patch git e2fsprogs libxslt1-dev xz-utils libgd3 libwebp-dev libvpx-dev \
-    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev iptables
+    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev iptables libudev-dev
 # 配置区域设置
 RUN locale-gen en_US.UTF-8
 
@@ -56,15 +56,9 @@ RUN curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
 RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
     && sh /lnmp/php.sh install 8.3
 
-# 确保 time.h 头文件被正确包含
-RUN echo '#include <time.h>' >> /usr/include/my_global.h
-RUN echo '#include <cstddef>' >> /usr/include/my_global.h
-RUN echo '#include <ctime>' >> /usr/include/my_global.h
-RUN echo '#include <stddef.h>' >> /usr/include/my_global.h
-
-# 安装 MySQL 5.7
+# 安装 MySQL 8.0
 RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
-    && sh /lnmp/mysql.sh install 5.7
+    && sh /lnmp/mysql.sh install 8.0
 
 # 清理安装包
 RUN rm -rf /lnmp \
