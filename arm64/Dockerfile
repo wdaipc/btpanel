@@ -56,9 +56,9 @@ RUN curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
 RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
     && sh /lnmp/php.sh install 8.3
 
-# 安装 MySQL 8.0
+# 安装 MySQL 5.7
 RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
-    && sh /lnmp/mysql.sh install 8.0
+    && sh /lnmp/mysql.sh install 5.7
 
 # 清理安装包
 RUN rm -rf /lnmp \
