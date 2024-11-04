@@ -56,6 +56,9 @@ RUN curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
 RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
     && sh /lnmp/php.sh install 8.3
 
+# 确保 time.h 头文件被正确包含
+RUN echo '#include <time.h>' >> /usr/include/my_global.h
+
 # 安装 MySQL 5.7
 RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
     && sh /lnmp/mysql.sh install 5.7
