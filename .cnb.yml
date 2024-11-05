@@ -27,7 +27,7 @@ lnmp:
           
     - runner:
         tags: cnb:arch:arm64:v8
-        cpu: 16
+        cpus: 16
       services:
         - docker
       env:
