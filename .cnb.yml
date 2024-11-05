@@ -35,6 +35,7 @@ lnmp:
         - name: docker login
           script: docker login -u ${CNB_TOKEN_USER_NAME} -p "${CNB_TOKEN}" ${CNB_DOCKER_REGISTRY}
         - name: docker build
+          timeout: 3600s
           script: docker build -t ${IMAGE_TAG} -f ./arm64/Dockerfile ./arm64
         - name: docker push
           script: docker push ${IMAGE_TAG}
