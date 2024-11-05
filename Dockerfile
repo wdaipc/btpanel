@@ -64,8 +64,8 @@ RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
 
 # 安装 phpmyadmin 5.1
 RUN service nginx start \
-    && curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/4/phpmyadmin.sh \
-    && sh /lnmp/phpmyadmin.sh install 5.1
+    && curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/0/phpmyadmin.sh \
+    && sh /lnmp/phpmyadmin.sh install 5.2
 
 # 清理安装包
 RUN rm -rf /lnmp \
