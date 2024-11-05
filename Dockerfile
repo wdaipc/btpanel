@@ -25,11 +25,13 @@ RUN locale-gen en_US.UTF-8 \
     && export LC_CTYPE=en_US.UTF-8 \
     && update-locale
 
-# 复制 bt.sh 文件
+# 复制启动脚本
 COPY bt.sh /bt.sh
+COPY init_mysql.sh /init_mysql.sh
 
-# 转换 bt.sh 文件的换行符
+# 转换启动脚本
 RUN dos2unix /bt.sh
+RUN dos2unix /init_mysql.sh
 
 # 设置构建参数
 ARG RANDOM_NAME
@@ -86,7 +88,7 @@ RUN apt clean \
     && rm -rf /var/lib/apt/lists/*
 
 # 设置标识文件
-RUN echo "docker_btlnmp_d12" > /www/server/panel/data/o.pl
+RUN echo "docker_btlamp_d12" > /www/server/panel/data/o.pl
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 
