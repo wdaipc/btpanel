@@ -61,13 +61,17 @@ RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
 RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
     && sh /lnmp/mysql.sh install 8.0
 
+# 清理 MySQL 数据目录并重新初始化
+RUN rm -rf /www/server/data/* \
+    && /www/server/mysql/bin/mysqld --initialize-insecure --user=mysql --datadir=/www/server/data \
+    && chown -R mysql:mysql /www/server/data
+
 # 清理安装包
 RUN rm -rf /lnmp \
     && rm -rf /www/server/php/83/src \
     && rm -rf /www/server/mysql/mysql-test \
     && rm -rf /www/server/mysql/src.tar.gz \
     && rm -rf /www/server/mysql/src \
-    && rm -rf /www/server/data/* \
     && rm -rf /www/server/nginx/src
 
 # 配置宝塔面板安全入口和用户名及密码
