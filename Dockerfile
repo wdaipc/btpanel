@@ -62,6 +62,10 @@ RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
 RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
     && sh /lnmp/mysql.sh install 8.0
 
+# 安装 phpmyadmin 5.1
+RUN curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/4/phpmyadmin.sh \
+    && sh /lnmp/phpmyadmin.sh install 5.1
+
 # 清理安装包
 RUN rm -rf /lnmp \
     && rm -rf /www/server/php/83/src \
