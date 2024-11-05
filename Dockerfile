@@ -49,9 +49,9 @@ RUN mkdir -p /lnmp
 # 创建目录
 RUN mkdir -p /lnmp
 
-# 安装 Nginx 1.27
-RUN curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
-    && sh /lnmp/nginx.sh install 1.27
+# 安装 Apache 2.4
+RUN curl -o /lnmp/nginx.sh https://download.bt.cn/install/4/apache.sh \
+    && sh /lnmp/apache.sh install 2.4
 
 # 安装 PHP 8.3
 RUN curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
