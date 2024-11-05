@@ -66,6 +66,8 @@ RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
 RUN set -e \
     && /etc/init.d/nginx start \
     && curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/0/phpmyadmin.sh \
+    && sed -i '/firewall-cmd/d' /lnmp/phpmyadmin.sh \
+    && sed -i '/iptables/d' /lnmp/phpmyadmin.sh \
     && sh -x /lnmp/phpmyadmin.sh install 5.2
 
 # 清理安装包
