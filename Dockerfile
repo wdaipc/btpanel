@@ -15,14 +15,15 @@ RUN apt install -y \
     diffutils unzip tar libbz2-dev libncurses5 libncurses5-dev libtool libevent-dev libssl-dev libsasl2-dev \
     libltdl-dev zlib1g-dev libglib2.0-0 libglib2.0-dev libkrb5-dev libpq-dev libpq5 gettext libcap-dev \
     libc-client2007e-dev psmisc patch git e2fsprogs libxslt1-dev xz-utils libgd3 libwebp-dev libvpx-dev \
-    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev iptables
-# 配置区域设置
-RUN locale-gen en_US.UTF-8
+    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev iptables libudev-dev libldap2-dev lua5.4 liblua5.4-dev
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-ENV LC_CTYPE en_US.UTF-8
+# 配置区域设置
+RUN locale-gen en_US.UTF-8 \
+    && export LANG=en_US.UTF-8 \
+    && export LANGUAGE=en_US:en \
+    && export LC_ALL=en_US.UTF-8 \
+    && export LC_CTYPE=en_US.UTF-8 \
+    && update-locale
 
 # 复制 bt.sh 文件
 COPY bt.sh /bt.sh

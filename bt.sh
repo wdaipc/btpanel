@@ -8,7 +8,7 @@ Setup_Path=$Root_Path/server/mysql
 Data_Path=$Root_Path/server/data
 
 soft_start(){
-    ${init_path}/nginx start
+    ${init_path}/httpd start
     ${init_path}/php-fpm-83 start
     ${init_path}/bt restart
     pkill crond
