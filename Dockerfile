@@ -60,7 +60,7 @@ RUN set -e \
     && /etc/init.d/nginx start \
     && curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/0/phpmyadmin.sh \
     && sed -i '/^if \[ -f "\/etc\/init\.d\/iptables" \];then/,/^fi$/d' /lnmp/phpmyadmin.sh \
-    && sed -i '/^if \[ "\$isVersion" == \'\' \];then/,/^fi$/d' /lnmp/phpmyadmin.sh \
+    && sed -i '/if \[ "\$isVersion" == "" \];then/,/fi/ d' /lnmp/phpmyadmin.sh \
     && sh -x /lnmp/phpmyadmin.sh install 5.2
 
 # 清理安装包
