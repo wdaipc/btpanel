@@ -1,7 +1,7 @@
 FROM debian:bookworm
 
 # 切换 Debian 镜像源为腾讯云源，更新包列表并安装依赖
-RUN RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources \
+RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources \
     && apt update && apt upgrade -y \
     && apt install -y \
     locales \
