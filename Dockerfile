@@ -16,13 +16,6 @@ RUN apt install -y \
     libltdl-dev zlib1g-dev libglib2.0-0 libglib2.0-dev libkrb5-dev libpq-dev libpq5 gettext libcap-dev \
     libc-client2007e-dev psmisc patch git e2fsprogs libxslt1-dev xz-utils libgd3 libwebp-dev libvpx-dev \
     libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev iptables
-# 配置区域设置
-RUN locale-gen en_US.UTF-8
-
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-ENV LC_CTYPE en_US.UTF-8
 
 # 复制启动脚本
 COPY bt.sh /bt.sh
@@ -66,8 +59,8 @@ RUN curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
 RUN set -e \
     && /etc/init.d/nginx start \
     && curl -o /lnmp/phpmyadmin.sh https://download.bt.cn/install/0/phpmyadmin.sh \
-    && sed -i '/if \[ -f "\/etc\/init.d\/iptables" \];then/,/fi/ d' /lnmp/phpmyadmin.sh \
-    && sed -i '/if \[ "\$isVersion" == "" \];then/,/fi/ d' /lnmp/phpmyadmin.sh \
+    && sed -i '/^if \[ -f "\/etc\/init\.d\/iptables" \];then/,/^fi$/d' /lnmp/phpmyadmin.sh \
+    && sed -i '/^if \[ "\$isVersion" == \'\' \];then/,/^fi$/d' /lnmp/phpmyadmin.sh \
     && sh -x /lnmp/phpmyadmin.sh install 5.2
 
 # 清理安装包
