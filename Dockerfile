@@ -24,7 +24,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 RUN ps -ef|grep nginx|grep master|grep -v /www/server/nginx && \
     ps -ef |grep mysqld|grep -v grep|grep -v /www/server/mysql && \
     ps -ef|grep php-fpm|grep master|grep -v /www/server/php && \
-    ps -ef |grep -E 'httpd|apache'|grep -v /www/server/apache|grep -v grep \
+    ps -ef |grep -E 'httpd|apache'|grep -v /www/server/apache|grep -v grep
     
 # 下载并安装宝塔面板及 lamp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
