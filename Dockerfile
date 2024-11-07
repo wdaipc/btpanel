@@ -17,29 +17,29 @@ RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debi
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "/"]
-COPY ["phpmyadmin.sh", "/lamp/"]
+COPY ["phpmyadmin.sh", "/lnmp/"]
 
 # 转换启动脚本
 RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 
-# 下载并安装宝塔面板及 lamp 环境
+# 下载并安装宝塔面板及 lnmp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
-    && curl -o /lamp/apache.sh https://download.bt.cn/install/4/apache.sh \
-    && sh /lamp/apache.sh install 2.4 \ 
-    && curl -o /lamp/php.sh https://download.bt.cn/install/4/php.sh \
-    && sh /lamp/php.sh install 8.3 \
-    && curl -o /lamp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
-    && sh /lamp/mysql.sh install 8.0 \
-    && sh /lamp/phpmyadmin.sh install 5.2 \
-    && rm -rf /lamp \
+    && curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
+    && sh /lnmp/nginx.sh install 1.27 \ 
+    && curl -o /lnmp/php.sh https://download.bt.cn/install/4/php.sh \
+    && sh /lnmp/php.sh install 8.3 \
+    && curl -o /lnmp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
+    && sh /lnmp/mysql.sh install 8.0 \
+    && sh /lnmp/phpmyadmin.sh install 5.2 \
+    && rm -rf /lnmp \
     && rm -rf /www/server/php/83/src \
     && rm -rf /www/server/mysql/mysql-test \
     && rm -rf /www/server/mysql/src.tar.gz \
     && rm -rf /www/server/mysql/src \
     && rm -rf /www/server/data/* \
     && rm -rf /www/server/nginx/src \
-    && echo "docker_btlamp_d12" > /www/server/panel/data/o.pl \
+    && echo "docker_btlnmp_d12" > /www/server/panel/data/o.pl \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* \
     && chmod +x /bt.sh \
