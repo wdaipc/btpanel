@@ -24,8 +24,9 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 
 # 下载并安装宝塔面板及 lamp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
-    && echo y | bash install_panel.sh -P 8888 --ssl-disable \
-    && curl -o /lamp/apache.sh https://download.bt.cn/install/4/apache.sh \
+    && echo y | bash install_panel.sh -P 8888 --ssl-disable
+
+RUN curl -o /lamp/apache.sh https://download.bt.cn/install/4/apache.sh \
     && sh /lamp/apache.sh install 2.4 \ 
     && curl -o /lamp/php.sh https://download.bt.cn/install/4/php.sh \
     && sh /lamp/php.sh install 8.3 \
