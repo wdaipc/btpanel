@@ -1,13 +1,9 @@
 FROM debian:bookworm
 
-# 切换 Debian 镜像源为腾讯云源
-RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources
-
-# 更新包列表并升级系统中已经安装的软件包
-RUN apt update && apt upgrade -y
-
-# 安装前置依赖
-RUN apt install -y \
+# 切换 Debian 镜像源为腾讯云源，更新包列表并安装依赖
+RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources \
+    && apt update && apt upgrade -y \
+    && apt install -y \
     locales \
     wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
     libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl dos2unix \
@@ -15,49 +11,32 @@ RUN apt install -y \
     diffutils unzip tar libbz2-dev libncurses5 libncurses5-dev libtool libevent-dev libssl-dev libsasl2-dev \
     libltdl-dev zlib1g-dev libglib2.0-0 libglib2.0-dev libkrb5-dev libpq-dev libpq5 gettext libcap-dev \
     libc-client2007e-dev psmisc patch git e2fsprogs libxslt1-dev xz-utils libgd3 libwebp-dev libvpx-dev \
-    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev
+    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev iptables libudev-dev libldap2-dev \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/* 
 
-# 配置区域设置
-RUN locale-gen en_US.UTF-8
+# 复制脚本
+COPY ["bt.sh", "init_mysql.sh", "/"]
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-ENV LC_CTYPE en_US.UTF-8
+# 转换启动脚本
+RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 
-# 复制 bt.sh 文件
-COPY bt.sh /bt.sh
-
-# 转换 bt.sh 文件的换行符
-RUN dos2unix /bt.sh
-
-# 设置构建参数
-ARG RANDOM_NAME
-
-# 设置一个btd12-前缀的随机主机名
-RUN echo "btd12-${RANDOM_NAME}" > /etc/hostname
-
-# 下载并安装宝塔面板
+# 下载并安装宝塔面板及 lnmp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
-    && echo y | bash install_panel.sh -P 8888 --ssl-disable
+    && echo y | bash install_panel.sh -P 8888 --ssl-disable \
+    && rm -rf /www/server/data/* \
+    && echo "docker_bt_d12" > /www/server/panel/data/o.pl \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && chmod +x /bt.sh \
+    && chmod +x /init_mysql.sh
+    
 
-# 配置宝塔面板安全入口和用户名及密码
+# 配置宝塔面板安全入口和用户名及密码，以及 SSH 密码
 RUN echo btpanel | bt 6 \
     && echo btpaneldocker | bt 5 \
-    && echo "/btpanel" > /www/server/panel/data/admin_path.pl
-
-# 设置 root 用户密码
-RUN echo "root:btpaneldocker" | chpasswd
-
-# 赋予 bt.sh 可执行权限
-RUN chmod +x /bt.sh
-
-# 清理缓存
-RUN apt clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# 设置标识文件
-RUN echo "dk_lib_test_d12" > /www/server/panel/data/o.pl
+    && echo "/btpanel" > /www/server/panel/data/admin_path.pl \
+    && echo "root:btpaneldocker" | chpasswd
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 
