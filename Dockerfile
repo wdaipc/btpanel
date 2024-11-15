@@ -26,6 +26,9 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_d12" > /www/server/panel/data/o.pl \
+    && sed -i 's/"memuDocker",//g' /www/server/panel/config/show_menu.json \
+    && sed -i 's/"memuAftp",//g' /www/server/panel/config/show_menu.json \
+    && sed -i 's/"memuAfirewall",//g' /www/server/panel/config/show_menu.json \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* \
     && chmod +x /bt.sh \
