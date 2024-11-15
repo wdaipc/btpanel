@@ -65,3 +65,28 @@ $:
             platforms:
               - linux/amd64
               - linux/arm64
+
+    - services:
+        - docker
+      imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
+      env:
+        IMAGE_TAG: btpanel/baota:latest-debian12
+      stages:
+        - name: await the amd64
+          type: cnb:await
+          options:
+            key: build-amd64
+        - name: await the arm64
+          type: cnb:await
+          options:
+            key: build-arm64
+        - name: manifest
+          image: cnbcool/manifest
+          settings:
+            username: $DOCKER_USERNAME
+            password: $DOCKER_PASSWD
+            target: ${IMAGE_TAG}
+            template: ${IMAGE_TAG}-OS-ARCH
+            platforms:
+              - linux/amd64
+              - linux/arm64
