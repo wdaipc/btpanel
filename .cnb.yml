@@ -70,7 +70,7 @@ $:
         - docker
       imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
-        IMAGE_TAG: btpanel/baota:latest-debian12
+        IMAGE_TAG: btpanel/baota:latest_debian12
       stages:
         - name: await the amd64
           type: cnb:await
