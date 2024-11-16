@@ -39,7 +39,7 @@ RUN curl -o /lamp/apache.sh https://download.bt.cn/install/4/apache.sh \
     && rm -rf /www/server/mysql/src.tar.gz \
     && rm -rf /www/server/mysql/src \
     && rm -rf /www/server/data/* \
-    && rm -rf /www/server/nginx/src \
+    && rm -rf /www/server/apache/src \
     && echo "docker_btlamp_d12" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
     && apt clean \
