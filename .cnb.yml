@@ -12,7 +12,7 @@ $:
         - docker
       imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
-        IMAGE_TAG: btpanel/baota:latest_debian12-latest-linux-amd64
+        IMAGE_TAG: btpanel/baota:latest_debian12-linux-amd64
       stages:
         - name: docker login
           script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
@@ -31,7 +31,7 @@ $:
         - docker
       imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
-        IMAGE_TAG: btpanel/baota:latest_debian12-latest-linux-arm64
+        IMAGE_TAG: btpanel/baota:latest_debian12-linux-arm64
       stages:
         - name: docker login
           script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
