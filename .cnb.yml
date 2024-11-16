@@ -10,6 +10,7 @@ $:
         tags: cnb:arch:amd64
       services:
         - docker
+      imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
         IMAGE_TAG: btpanel/baota:latest_debian12:latest-linux-amd64
       stages:
@@ -28,6 +29,7 @@ $:
         tags: cnb:arch:arm64:v8
       services:
         - docker
+      imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
         IMAGE_TAG: btpanel/baota:latest_debian12:latest-linux-arm64
       stages:
