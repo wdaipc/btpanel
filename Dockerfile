@@ -26,7 +26,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable
 
-RUN curl -o /lamp/apache.sh https://download.bt.cn/install/4/apache.sh \
+RUN curl -o /lamp/apache.sh https://download.bt.cn/install/0/apache.sh \
     && sh /lamp/apache.sh install 2.4 \ 
     && curl -o /lamp/php.sh https://download.bt.cn/install/4/php.sh \
     && sh /lamp/php.sh install 8.3 \
