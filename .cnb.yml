@@ -44,8 +44,10 @@ bullseye:
           type: cnb:resolve
           options:
             key: build-arm64
-
-    - services:
+    - runner:
+        tags: cnb:arch:amd64
+        cpus: 2
+      services:
         - docker
       env:
         IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:${CNB_BRANCH}
