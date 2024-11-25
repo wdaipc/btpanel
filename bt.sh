@@ -38,7 +38,7 @@ soft_start(){
 }
 
 init_mysql(){
-    if [ "${O_pl}" != "docker_btlamp_d12" ] && [ "${O_pl}" != "docker_btlnmp_d12" ];then
+    if [ "${O_pl}" != "docker_btlamp_d11" ] && [ "${O_pl}" != "docker_btlnmp_d11" ];then
         return
     fi
     if [ -d "${Data_Path}" ]; then
