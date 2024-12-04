@@ -33,10 +33,21 @@ COPY ["bt.sh", "init_mysql.sh", "/"]
 RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 
 # 下载并安装宝塔面板及 lnmp 环境
-RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
-    && echo y | bash install_panel.sh -P 8888 --ssl-disable \
+RUN curl -o /lamp/apache.sh https://download.bt.cn/install/0/apache.sh \
+    && sh /lamp/apache.sh install 2.4 \ 
+    && curl -o /lamp/php.sh https://download.bt.cn/install/4/php.sh \
+    && sh /lamp/php.sh install 8.3 \
+    && curl -o /lamp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
+    && sh /lamp/mysql.sh install 8.0 \
+    && sh /lamp/phpmyadmin.sh install 5.2 \
+    && rm -rf /lamp \
+    && rm -rf /www/server/php/83/src \
+    && rm -rf /www/server/mysql/mysql-test \
+    && rm -rf /www/server/mysql/src.tar.gz \
+    && rm -rf /www/server/mysql/src \
     && rm -rf /www/server/data/* \
-    && echo "docker_bt_d11" > /www/server/panel/data/o.pl \
+    && rm -rf /www/server/apache/src \
+    && echo "docker_btlamp_c79" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
     && yum clean all \
     && rm -rf /var/cache/yum \
