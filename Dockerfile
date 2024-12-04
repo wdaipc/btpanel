@@ -5,8 +5,8 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.tencent.com/rocky|g' \
     -i.bak \
     /etc/yum.repos.d/rocky-*.repo \
-    && yum update -y \
     && yum makecache \
+    && yum update -y \
     && yum install -y yum-utils epel-release \
     && yum config-manager --set-enabled devel \
     && yum config-manager --set-enabled epel \
