@@ -1,4 +1,10 @@
-FROM rockylinux/rockylinux:9
+FROM rockylinux:9
+
+# 设置构建参数
+ARG RANDOM_NAME
+
+# 设置一个随机主机名
+RUN echo "${RANDOM_NAME}" > /etc/hostname
 
 # 切换 rockylinux 镜像源为腾讯云源，更新包列表并安装依赖
 RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.tencent.com/rocky|g' -i.bak /etc/yum.repos.d/rocky-*.repo && \
