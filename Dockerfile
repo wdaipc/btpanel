@@ -8,7 +8,6 @@ RUN echo "btr9-${RANDOM_NAME}" > /etc/hostname
 
 # 切换 rockylinux 镜像源为腾讯云源，更新包列表并安装依赖
 RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.tencent.com/rocky|g' -i.bak /etc/yum.repos.d/rocky-*.repo && \
-    -i /etc/yum.repos.d/epel{,-testing}.repo && \
     dnf makecache && \
     (dnf install -y epel-release || dnf install -y epol-release 'dnf-command(config-manager)') && \
     (dnf config-manager --set-enabled powertools || dnf config-manager --set-enabled crb) || true && \
