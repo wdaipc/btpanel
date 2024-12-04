@@ -38,10 +38,10 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable
 
 RUN curl -o /lamp/apache.sh https://download.bt.cn/install/0/apache.sh \
-    && sh /lamp/apache.sh install 2.4 \ 
-    && curl -o /lamp/php.sh https://download.bt.cn/install/4/php.sh \
-    && sh /lamp/php.sh install 8.3 \
-    && curl -o /lamp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
+    && sh /lamp/apache.sh install 2.4 
+RUN curl -o /lamp/php.sh https://download.bt.cn/install/4/php.sh \
+    && sh /lamp/php.sh install 8.3 
+RUN curl -o /lamp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
     && sh /lamp/mysql.sh install 8.0 \
     && sh /lamp/phpmyadmin.sh install 5.2 \
     && rm -rf /lamp \
