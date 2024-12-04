@@ -1,5 +1,11 @@
 FROM centos:centos7.9.2009
 
+# 设置构建参数
+ARG RANDOM_NAME
+
+# 设置一个btc7-前缀的随机主机名
+RUN echo "btc7-${RANDOM_NAME}" > /etc/hostname
+
 # 切换 CentOS 镜像源为腾讯云源，更新包列表并安装依赖
 RUN sed -i.bak \
     -e 's|^mirrorlist=|#mirrorlist=|g' \
