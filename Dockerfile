@@ -6,7 +6,7 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     -i.bak \
     /etc/yum.repos.d/rocky-*.repo \
     && yum makecache \
-    && yum config-manager --set-enabled devel \
+    && dnf config-manager --set-enabled devel \
     && yum update -y \
     && yum install -y \
     glibc-locale-source \
