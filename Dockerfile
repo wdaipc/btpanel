@@ -1,19 +1,24 @@
-FROM debian:bullseye
+FROM centos:centos7.9.2009
 
-# 切换 Debian 镜像源为腾讯云源，更新包列表并安装依赖
-RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list \
-    && apt update && apt upgrade -y \
-    && apt install -y \
-    locales \
-    wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
-    libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl dos2unix \
-    build-essential re2c cron bzip2 libzip-dev libc6-dev bison file rcconf flex vim m4 gawk less cpp binutils \
-    diffutils unzip tar libbz2-dev libncurses5 libncurses5-dev libtool libevent-dev libssl-dev libsasl2-dev \
-    libltdl-dev zlib1g-dev libglib2.0-0 libglib2.0-dev libkrb5-dev libpq-dev libpq5 gettext libcap-dev \
-    libc-client2007e-dev psmisc patch git e2fsprogs libxslt1-dev xz-utils libgd3 libwebp-dev libvpx-dev \
-    libfreetype6-dev libjpeg62-turbo libjpeg62-turbo-dev iptables libudev-dev libldap2-dev \
-    && apt clean \
-    && rm -rf /var/lib/apt/lists/* 
+# 切换 CentOS 镜像源为腾讯云源，更新包列表并安装依赖
+RUN sed -e "s|^mirrorlist=|#mirrorlist=|g" \
+    -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever|baseurl=https://mirrors.tencent.com/centos-vault/\$releasever|g" \
+    -e "s|^#baseurl=http://mirror.centos.org/\$contentdir/\$releasever|baseurl=https://mirrors.tencent.com/centos-vault/\$releasever|g" \
+    -i.bak \
+    /etc/yum.repos.d/CentOS-*.repo \
+    && yum clean all \
+    && yum makecache \
+    && yum update -y \
+    && yum install -y \
+    glibc-locale-source \
+    wget iproute openssh-server gd-devel cmake make gcc gcc-c++ autoconf \
+    libsodium-devel oniguruma-devel libssh2-devel c-ares-devel libaio-devel sudo curl dos2unix \
+    bzip2 zip unzip tar ncurses-devel libtool libevent-devel openssl-devel cyrus-sasl-devel \
+    libtool-ltdl-devel zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel \
+    uw-imap-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel \
+    freetype-devel libjpeg-turbo libjpeg-turbo-devel iptables systemd-devel openldap-devel \
+    && yum clean all \
+    && rm -rf /var/cache/yum
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "/"]
@@ -25,7 +30,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
     && rm -rf /www/server/data/* \
-    && echo "docker_bt_d11" > /www/server/panel/data/o.pl \
+    && echo "docker_bt_c79" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* \
