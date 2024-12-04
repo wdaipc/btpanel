@@ -5,7 +5,7 @@ $:
       docker:
         build: 
           dockerfile: .ide/Dockerfile
-cent7.9:
+cent7.9_lamp:
   push:
     - runner:
         tags: cnb:arch:amd64
