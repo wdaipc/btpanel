@@ -1,11 +1,10 @@
 FROM centos:centos7.9.2009
 
-# 切换 CentOS 镜像源为腾讯云源，更新包列表并安装依赖
-RUN sed -e "s|^mirrorlist=|#mirrorlist=|g" \
-    -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009|g" \
-    -e "s|^#baseurl=http://mirror.centos.org/\$contentdir/\$releasever|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009|g" \
-    -i.bak \
-    /etc/yum.repos.d/CentOS-*.repo \
+# 切换 CentOS 镜像源为 CentOS Vault，更新包列表并安装依赖
+RUN curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.tencent.com/repo/centos7_base.repo \
+    && sed -i -e '/mirrors.cloud.tencent.com/d' -e '/mirrors.tencent.com/d' /etc/yum.repos.d/CentOS-Base.repo \
+    && curl -o /etc/yum.repos.d/epel.repo https://mirrors.tencent.com/repo/epel-7.repo \
+    && sed -i -e '/mirrors.cloud.tencent.com/d' -e '/mirrors.tencent.com/d' /etc/yum.repos.d/epel.repo \
     && yum clean all \
     && yum makecache \
     && yum update -y \
