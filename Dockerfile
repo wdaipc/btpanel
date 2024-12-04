@@ -3,8 +3,6 @@ FROM centos:centos7.9.2009
 # 切换 CentOS 镜像源为 CentOS Vault，更新包列表并安装依赖
 RUN curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.tencent.com/repo/centos7_base.repo \
     && sed -i -e '/mirrors.cloud.tencent.com/d' -e '/mirrors.tencent.com/d' /etc/yum.repos.d/CentOS-Base.repo \
-    && curl -o /etc/yum.repos.d/epel.repo https://mirrors.tencent.com/repo/epel-7.repo \
-    && sed -i -e '/mirrors.cloud.tencent.com/d' -e '/mirrors.tencent.com/d' /etc/yum.repos.d/epel.repo \
     && yum clean all \
     && yum makecache \
     && yum update -y \
