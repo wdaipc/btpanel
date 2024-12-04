@@ -7,7 +7,7 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     /etc/yum.repos.d/rocky-*.repo \
     && yum update -y \
     && yum makecache \
-    && yum install -y yum-utils epel-release epel-next-release \
+    && yum install -y yum-utils epel-release \
     && yum config-manager --set-enabled devel \
     && yum config-manager --set-enabled epel \
     && yum install -y \
