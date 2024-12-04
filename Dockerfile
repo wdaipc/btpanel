@@ -4,7 +4,7 @@ FROM centos:centos7.9.2009
 RUN sed -e "s|^mirrorlist=|#mirrorlist=|g" \
     -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009|g" \
     -e "s|^#baseurl=http://mirror.centos.org/\$contentdir/\$releasever|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009|g" \
-    -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever/extras|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009/extras|g" \
+    -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever/extras|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009|g" \
     -i.bak \
     /etc/yum.repos.d/CentOS-*.repo \
     && yum clean all \
