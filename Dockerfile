@@ -4,10 +4,15 @@ FROM rockylinux:9
 ARG RANDOM_NAME
 
 # 设置一个随机主机名
-RUN echo "${RANDOM_NAME}" > /etc/hostname
+RUN echo "btr9-${RANDOM_NAME}" > /etc/hostname
 
 # 切换 rockylinux 镜像源为腾讯云源，更新包列表并安装依赖
 RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.tencent.com/rocky|g' -i.bak /etc/yum.repos.d/rocky-*.repo && \
+    sed -e 's!^metalink=!#metalink=!g' \
+    -e 's!^#baseurl=!baseurl=!g' \
+    -e 's!https\?://download\.fedoraproject\.org/pub/epel!https://mirrors.tencent.com/epel!g' \
+    -e 's!https\?://download\.example/pub/epel!https://mirrors.tencent.com/epel!g' \
+    -i /etc/yum.repos.d/epel{,-testing}.repo && \
     dnf makecache && \
     (dnf install -y epel-release || dnf install -y epol-release 'dnf-command(config-manager)') && \
     (dnf config-manager --set-enabled powertools || dnf config-manager --set-enabled crb) || true && \
