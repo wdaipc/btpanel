@@ -1,27 +1,20 @@
-FROM centos:centos7.9.2009
+FROM rockylinux:9
 
-# 设置构建参数
-ARG RANDOM_NAME
-
-# 设置一个btc7-前缀的随机主机名
-RUN echo "btc7-${RANDOM_NAME}" > /etc/hostname
-
-# 切换 CentOS 镜像源为腾讯云源，更新包列表并安装依赖
-RUN sed -i.bak \
-    -e 's|^mirrorlist=|#mirrorlist=|g' \
-    -e 's|^#baseurl=http://mirror.centos.org|baseurl=https://mirrors.tencent.com/centos-vault|g' \
+# 切换 rockylinux 镜像源为腾讯云源，更新包列表并安装依赖
+RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+    -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.tencent.com/rocky|g' \
     -i.bak \
-    /etc/yum.repos.d/*.repo \
-    && yum clean all \
+    /etc/yum.repos.d/Rocky-*.repo \
     && yum makecache \
+    && yum config-manager --set-enabled devel \
     && yum update -y \
     && yum install -y \
     glibc-locale-source \
     wget iproute openssh-server gd-devel cmake make gcc gcc-c++ autoconf \
-    libsodium-devel oniguruma-devel libssh2-devel c-ares-devel libaio-devel sudo curl dos2unix \
+    libsodium-devel oniguruma libssh2-devel c-ares-devel libaio-devel sudo curl dos2unix \
     bzip2 zip unzip tar ncurses-devel libtool libevent-devel openssl-devel cyrus-sasl-devel \
-    libtool-ltdl-devel zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel \
-    uw-imap-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel \
+    libtool-libs zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel \
+    oniguruma-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel \
     freetype-devel libjpeg-turbo libjpeg-turbo-devel iptables systemd-devel openldap-devel \
     && yum clean all \
     && rm -rf /var/cache/yum
@@ -40,7 +33,7 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
 RUN curl -o /lamp/apache.sh https://download.bt.cn/install/0/apache.sh \
     && sh /lamp/apache.sh install 2.4 \ 
     && curl -o /lamp/php.sh https://download.bt.cn/install/4/php.sh \
-    && sh /lamp/php.sh install 8.2 \
+    && sh /lamp/php.sh install 8.3 \
     && curl -o /lamp/mysql.sh https://download.bt.cn/install/4/mysql.sh \
     && sh /lamp/mysql.sh install 8.0 \
     && sh /lamp/phpmyadmin.sh install 5.2 \
