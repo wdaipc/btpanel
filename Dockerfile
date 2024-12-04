@@ -5,8 +5,9 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.tencent.com/rocky|g' \
     -i.bak \
     /etc/yum.repos.d/rocky-*.repo \
+    && yum install yum-utils \
     && yum makecache \
-    && dnf config-manager --set-enabled devel \
+    && yum config-manager --set-enabled devel \
     && yum update -y \
     && yum install -y \
     glibc-locale-source \
