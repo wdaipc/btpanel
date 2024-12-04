@@ -13,7 +13,7 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' -e 's|^#baseurl=http://dl.rockylinux.
     (dnf config-manager --set-enabled powertools || dnf config-manager --set-enabled crb) || true && \
     dnf repolist && \
     dnf update -y && \
-    dnf install -y glibc-locale-source procps-ng util-linux wget iproute openssh-server gd-devel cmake make gcc gcc-c++ autoconf libsodium-devel oniguruma libssh2-devel c-ares-devel libaio-devel sudo dos2unix bzip2 zip unzip tar ncurses-devel libtool libevent-devel openssl-devel cyrus-sasl-devel libtool-libs zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel oniguruma-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel freetype-devel libjpeg-turbo libjpeg-turbo-devel iptables systemd-devel openldap-devel && \
+    dnf install -y glibc-locale-source procps-ng which util-linux wget iproute openssh-server gd-devel cmake make gcc gcc-c++ autoconf libsodium-devel oniguruma libssh2-devel c-ares-devel libaio-devel sudo dos2unix bzip2 zip unzip tar ncurses-devel libtool libevent-devel openssl-devel cyrus-sasl-devel libtool-libs zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel oniguruma-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel freetype-devel libjpeg-turbo libjpeg-turbo-devel iptables systemd-devel openldap-devel && \
     dnf clean all && \
     rm -rf /var/cache/dnf
 
