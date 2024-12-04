@@ -8,6 +8,7 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     && yum install -y yum-utils \
     && yum makecache \
     && yum config-manager --set-enabled devel \
+    && yum config-manager --set-enabled epel \
     && yum update -y \
     && yum install -y \
     glibc-locale-source \
