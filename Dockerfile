@@ -1,8 +1,12 @@
 FROM centos:centos7.9.2009
 
-# 切换 CentOS 镜像源为 CentOS Vault，更新包列表并安装依赖
-RUN curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.tencent.com/repo/centos7_base.repo \
-    && sed -i -e '/mirrors.cloud.tencent.com/d' -e '/mirrors.tencent.com/d' /etc/yum.repos.d/CentOS-Base.repo \
+# 切换 CentOS 镜像源为腾讯云源，更新包列表并安装依赖
+RUN sed -e "s|^mirrorlist=|#mirrorlist=|g" \
+    -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009|g" \
+    -e "s|^#baseurl=http://mirror.centos.org/\$contentdir/\$releasever|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009|g" \
+    -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever/extras|baseurl=https://mirrors.tencent.com/centos-vault/7.9.2009/extras|g" \
+    -i.bak \
+    /etc/yum.repos.d/CentOS-*.repo \
     && yum clean all \
     && yum makecache \
     && yum update -y \
@@ -27,7 +31,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
     && rm -rf /www/server/data/* \
-    && echo "docker_bt_c79" > /www/server/panel/data/o.pl \
+    && echo "docker_bt_d11" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* \
