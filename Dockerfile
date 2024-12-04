@@ -3,23 +3,23 @@ FROM rockylinux:9
 # 切换 rockylinux 镜像源为腾讯云源，更新包列表并安装依赖
 RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.tencent.com/rocky|g' \
-    -i.bak \
-    /etc/yum.repos.d/rocky-*.repo \
-    && yum makecache \
-    && yum update -y \
-    && yum install -y yum-utils epel-release \
-    && yum config-manager --set-enabled devel \
-    && yum config-manager --set-enabled epel \
-    && yum install -y \
-    glibc-locale-source \
-    wget iproute openssh-server gd-devel cmake make gcc gcc-c++ autoconf \
-    libsodium-devel oniguruma libssh2-devel c-ares-devel libaio-devel sudo curl dos2unix \
-    bzip2 zip unzip tar ncurses-devel libtool libevent-devel openssl-devel cyrus-sasl-devel \
-    libtool-libs zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel \
-    oniguruma-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel \
-    freetype-devel libjpeg-turbo libjpeg-turbo-devel iptables systemd-devel openldap-devel \
-    && yum clean all \
-    && rm -rf /var/cache/yum
+    -i.bak /etc/yum.repos.d/rocky-*.repo \
+    && dnf makecache \
+    && dnf update -y \
+    && dnf install -y dnf-plugins-core epel-release \
+    && dnf config-manager --set-enabled devel \
+    && dnf config-manager --set-enabled epel \
+    && dnf remove -y curl-minimal \
+    && dnf install -y \
+        glibc-locale-source \
+        wget iproute openssh-server gd-devel cmake make gcc gcc-c++ autoconf \
+        libsodium-devel oniguruma libssh2-devel c-ares-devel libaio-devel sudo curl dos2unix \
+        bzip2 zip unzip tar ncurses-devel libtool libevent-devel openssl-devel cyrus-sasl-devel \
+        libtool-libs zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel \
+        oniguruma-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel \
+        freetype-devel libjpeg-turbo libjpeg-turbo-devel iptables systemd-devel openldap-devel \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "/"]
@@ -46,13 +46,12 @@ RUN curl -o /lamp/apache.sh https://download.bt.cn/install/0/apache.sh \
     && rm -rf /www/server/mysql/src \
     && rm -rf /www/server/data/* \
     && rm -rf /www/server/apache/src \
-    && echo "docker_btlamp_c79" > /www/server/panel/data/o.pl \
+    && echo "docker_btlamp_r9" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
-    && yum clean all \
-    && rm -rf /var/cache/yum \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf \
     && chmod +x /bt.sh \
     && chmod +x /init_mysql.sh
-    
 
 # 配置宝塔面板安全入口和用户名及密码，以及 SSH 密码
 RUN echo btpanel | bt 6 \
