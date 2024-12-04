@@ -1,4 +1,4 @@
-FROM rockylinux:9
+FROM rockylinux:9-minimal
 
 # 切换 rockylinux 镜像源为腾讯云源，更新包列表并安装依赖
 RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.tencent.com/rocky|g' -i.bak /etc/yum.repos.d/rocky-*.repo && \
@@ -9,7 +9,7 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' -e 's|^#baseurl=http://dl.rockylinux.
     dnf update -y && \
     dnf -y groupinstall 'Development Tools' && \
     dnf remove -y curl-minimal && \
-    dnf install -y glibc-locale-source wget iproute openssh-server gd-devel cmake make gcc gcc-c++ autoconf libsodium-devel oniguruma libssh2-devel c-ares-devel libaio-devel sudo dos2unix bzip2 zip unzip tar ncurses-devel libtool libevent-devel openssl-devel cyrus-sasl-devel libtool-libs zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel oniguruma-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel freetype-devel libjpeg-turbo libjpeg-turbo-devel iptables systemd-devel openldap-devel && \
+    dnf install -y glibc-locale-source wget curl iproute openssh-server gd-devel cmake make gcc gcc-c++ autoconf libsodium-devel oniguruma libssh2-devel c-ares-devel libaio-devel sudo dos2unix bzip2 zip unzip tar ncurses-devel libtool libevent-devel openssl-devel cyrus-sasl-devel libtool-libs zlib-devel glib2 glib2-devel krb5-devel postgresql-devel gettext libcap-devel oniguruma-devel psmisc patch git e2fsprogs libxslt-devel xz libwebp-devel libvpx-devel freetype-devel libjpeg-turbo libjpeg-turbo-devel iptables systemd-devel openldap-devel && \
     dnf clean all && \
     rm -rf /var/cache/dnf
 
