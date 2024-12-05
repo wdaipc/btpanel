@@ -31,10 +31,11 @@ soft_start(){
     ${init_path}/bt start
 
     pkill crond
-    /sbin/crond
-
+    /usr/sbin/crond
+    
+    ssh-keygen -A
     chmod 600 /etc/ssh/ssh_host_*
-    /usr/sbin/sshd -D &
+    /usr/sbin/sshd  &
 }
 
 init_mysql(){
