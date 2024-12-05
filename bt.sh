@@ -38,7 +38,7 @@ soft_start(){
 }
 
 init_mysql(){
-    if [ "${O_pl}" != "docker_btlamp_c79" ] && [ "${O_pl}" != "docker_btlnmp_c79" ];then
+    if [ "${O_pl}" != "docker_btlamp_r9" ] && [ "${O_pl}" != "docker_btlnmp_r9" ];then
         return
     fi
     if [ -d "${Data_Path}" ]; then
@@ -51,7 +51,7 @@ init_mysql(){
         fi
     fi
     if [ -f /init_mysql.sh ] && [ -d "${Setup_Path}" ];then
-        sh /init_mysql.sh
+        bash /init_mysql.sh
         rm -f /init_mysql.sh
     fi
 }
