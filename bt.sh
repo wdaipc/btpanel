@@ -51,7 +51,7 @@ init_mysql(){
         fi
     fi
     if [ -f /init_mysql.sh ] && [ -d "${Setup_Path}" ];then
-        sh /init_mysql.sh
+        bash /init_mysql.sh
         rm -f /init_mysql.sh
     fi
 }
