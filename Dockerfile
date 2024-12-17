@@ -9,19 +9,20 @@ RUN apk update && apk upgrade \
 RUN python3 -m venv /www/server/panel/pyenv
 ENV PATH="/www/server/panel/pyenv/bin:$PATH"
 
+# 确保虚拟环境中的python和pip具有执行权限
+RUN chmod +x /www/server/panel/pyenv/bin/python3 \
+    && chmod +x /www/server/panel/pyenv/bin/pip3
+    
 # 安装Python和pip包
 RUN pip install --upgrade pip \
     && pip install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent gevent-websocket pyopenssl \
     && pip install flask==1.1.4 \
     && pip install Pillow -U
 
-# 确保虚拟环境中的python和pip具有执行权限
-RUN chmod +x /www/server/panel/pyenv/bin/python3 \
-    && chmod +x /www/server/panel/pyenv/bin/pip3
-
 # 创建符号链接
 RUN ln -sf /www/server/panel/pyenv/bin/pip3 /usr/bin/btpip \
     && ln -sf /www/server/panel/pyenv/bin/python3 /usr/bin/btpython
+
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "install_panel.sh", "/"]
