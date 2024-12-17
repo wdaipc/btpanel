@@ -10,8 +10,7 @@ RUN python3 -m venv /www/server/panel/pyenv
 ENV PATH="/www/server/panel/pyenv/bin:$PATH"
 
 # 确保虚拟环境中的python和pip具有执行权限
-RUN chmod +x /www/server/panel/pyenv/bin/python3 \
-    && chmod +x /www/server/panel/pyenv/bin/pip3
+RUN chmod -R 700 /www/server/panel/pyenv/bin/
     
 # 安装Python和pip包
 RUN pip install --upgrade pip \
