@@ -19,6 +19,10 @@ RUN pip install --upgrade pip \
 RUN chmod +x /www/server/panel/pyenv/bin/python3 \
     && chmod +x /www/server/panel/pyenv/bin/pip3
 
+# 创建符号链接
+RUN ln -sf /www/server/panel/pyenv/bin/pip3 /usr/bin/btpip \
+    && ln -sf /www/server/panel/pyenv/bin/python3 /usr/bin/btpython
+
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "install_panel.sh", "/"]
 
