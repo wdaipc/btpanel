@@ -2,8 +2,25 @@ FROM alpine
 
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
 RUN apk update && apk upgrade \
-    && apk add curl curl-dev libffi-dev openssl-dev py3-gevent shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base libuv linux-headers \
+    && apk add curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers python3 python3-dev py3-pip \
     && apk cache clean 
+
+# 安装Python和pip包
+RUN pip3 install -U pip \
+    && pip3 install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl \
+    && pip3 install flask==1.1.4 \
+    && pip3 install Pillow -U
+
+# 创建pyenv目录并创建符号链接
+RUN pyenv_bin=/www/server/panel/pyenv/bin \
+    && mkdir -p $pyenv_bin \
+    && ln -sf /usr/bin/pip3 $pyenv_bin/pip \
+    && ln -sf /usr/bin/pip3 $pyenv_bin/pip3 \
+    && ln -sf /usr/bin/pip3 $pyenv_bin/pip3.7 \
+    && ln -sf /usr/bin/python3 $pyenv_bin/python \
+    && ln -sf /usr/bin/python3 $pyenv_bin/python3 \
+    && ln -sf /usr/bin/python3 $pyenv_bin/python3.7 \
+    && echo > $pyenv_bin/activate
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "/"]
