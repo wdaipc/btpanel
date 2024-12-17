@@ -18,15 +18,12 @@ RUN pip install --upgrade pip \
 # 创建pyenv目录并创建符号链接
 RUN pyenv_bin=/www/server/panel/pyenv/bin \
     && mkdir -p $pyenv_bin \
-    && ln -sf $pyenv_bin/pip $pyenv_bin/pip \
-    && ln -sf $pyenv_bin/pip $pyenv_bin/pip3 \
-    && ln -sf $pyenv_bin/pip $pyenv_bin/pip3.7 \
-    && ln -sf $pyenv_bin/python $pyenv_bin/python \
-    && ln -sf $pyenv_bin/python $pyenv_bin/python3 \
-    && ln -sf $pyenv_bin/python $pyenv_bin/python3.7 \
-    && ln -sf $pyenv_bin/pip3.7 /usr/bin/btpip \
-    && ln -sf $pyenv_bin/python3.7 /usr/bin/btpython \
-    && echo > $pyenv_bin/activate
+    && ln -sf /usr/bin/pip $pyenv_bin/pip \
+    && ln -sf /usr/bin/pip $pyenv_bin/pip3 \
+    && ln -sf /usr/bin/pip $pyenv_bin/pip3.7 \
+    && ln -sf /usr/bin/python $pyenv_bin/python \
+    && ln -sf /usr/bin/python $pyenv_bin/python3 \
+    && ln -sf /usr/bin/python $pyenv_bin/python3.7
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "install_panel.sh", "/"]
