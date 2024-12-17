@@ -3,15 +3,15 @@ FROM alpine
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
 RUN apk update && apk upgrade \
     && apk add curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers python3 python3-dev py3-pip \
-    && apk cache clean 
+    && rm -rf /var/cache/apk/*
 
 # 创建虚拟环境并激活
 RUN python3 -m venv /www/server/panel/pyenv
 ENV PATH="/www/server/panel/pyenv/bin:$PATH"
 
 # 确保虚拟环境中的python和pip具有执行权限
-RUN chmod -R 700 /www/server/panel/pyenv/bin/
-    
+RUN chmod -R 755 /www/server/panel/pyenv/bin/
+
 # 安装Python和pip包
 RUN pip install --upgrade pip \
     && pip install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent gevent-websocket pyopenssl \
@@ -21,7 +21,6 @@ RUN pip install --upgrade pip \
 # 创建符号链接
 RUN ln -sf /www/server/panel/pyenv/bin/pip3 /usr/bin/btpip \
     && ln -sf /www/server/panel/pyenv/bin/python3 /usr/bin/btpython
-
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "install_panel.sh", "/"]
@@ -34,7 +33,6 @@ RUN echo y | bash /install_panel.sh -P 8888 --ssl-disable \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_alpine" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
-    && apk cache clean \
     && chmod +x /bt.sh \
     && chmod +x /init_mysql.sh
 
