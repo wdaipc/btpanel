@@ -2,7 +2,7 @@ FROM alpine
 
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
 RUN apk update && apk upgrade \
-    && apk add curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base libuv linux-headers \
+    && apk add curl curl-dev libffi-dev openssl-dev py3-gevent shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base libuv linux-headers \
     && apk cache clean 
 
 # 复制脚本
