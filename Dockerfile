@@ -11,14 +11,13 @@ ENV PATH="/www/server/panel/pyenv/bin:$PATH"
 
 # 安装Python和pip包
 RUN pip install --upgrade pip \
-    && pip install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl \
+    && pip install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent gevent-websocket pyopenssl \
     && pip install flask==1.1.4 \
     && pip install Pillow -U
 
-# 创建pyenv目录并创建符号链接
-RUN pyenv_bin=/www/server/panel/pyenv/bin \
-    && ln -sf $pyenv_bin/pip3.12 /usr/bin/btpip \
-    && ln -sf $pyenv_bin/python3.12 /usr/bin/btpython 
+# 确保虚拟环境中的python和pip具有执行权限
+RUN chmod +x /www/server/panel/pyenv/bin/python3 \
+    && chmod +x /www/server/panel/pyenv/bin/pip3
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "install_panel.sh", "/"]
@@ -27,8 +26,7 @@ COPY ["bt.sh", "init_mysql.sh", "install_panel.sh", "/"]
 RUN dos2unix /bt.sh && dos2unix /init_mysql.sh && dos2unix /install_panel.sh
 
 # 下载并安装宝塔面板及 lnmp 环境
-RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
-    && echo y | bash install_panel.sh -P 8888 --ssl-disable \
+RUN echo y | bash /install_panel.sh -P 8888 --ssl-disable \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_alpine" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
