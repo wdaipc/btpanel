@@ -36,6 +36,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 
 # 下载并安装宝塔面板及 lnmp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
+    && sed -i '/Install_Python_Lib/d' install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_alpine" > /www/server/panel/data/o.pl \
