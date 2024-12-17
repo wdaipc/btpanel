@@ -2,7 +2,7 @@ FROM alpine
 
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
 RUN apk update && apk upgrade \
-    && apk add curl libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap jpeg-dev dos2unix build-base libev-dev \
+    && apk add curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers \
     && apk cache clean 
 
 # 复制脚本
@@ -20,7 +20,6 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && apk cache clean \
     && chmod +x /bt.sh \
     && chmod +x /init_mysql.sh
-    
 
 # 配置宝塔面板安全入口和用户名及密码，以及 SSH 密码
 RUN echo btpanel | bt 6 \
