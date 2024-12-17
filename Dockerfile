@@ -27,7 +27,8 @@ COPY ["bt.sh", "init_mysql.sh", "install_panel.sh", "/"]
 RUN dos2unix /bt.sh && dos2unix /init_mysql.sh && dos2unix /install_panel.sh
 
 # 下载并安装宝塔面板及 lnmp 环境
-RUN echo y | bash /install_panel.sh -P 8888 --ssl-disable \
+RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
+    && echo y | bash install_panel.sh -P 8888 --ssl-disable \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_alpine" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
