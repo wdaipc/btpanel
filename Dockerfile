@@ -1,7 +1,7 @@
 FROM alpine
 
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
-RUN apk update && apk upgrade -y \
+RUN apk update && apk upgrade \
     && apk add libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap jpeg-dev dos2unix \
     && apk cache clean 
 
