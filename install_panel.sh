@@ -855,7 +855,7 @@ Install_Python_Lib(){
 		source $pyenv_path/pyenv/bin/activate
 	
 		pip install -U pip
-		pip install Pillow chardet flask psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
+		pip install Pillow chardet pycrypto paramiko flask psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
 		pip install Pillow -U
 	
 		pyenv_bin=$pyenv_path/pyenv/bin
