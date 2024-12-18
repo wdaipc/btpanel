@@ -851,7 +851,7 @@ Install_Python_Lib(){
     is_alpine=$(cat /etc/os-release | grep -i alpine)
     if [ "$is_alpine" != "" ];then
         apk update
-        apk add python3 python3-dev py3-pip py3-psutil py3-gevent py3-pyopenssl py3-paramiko py3-flask py3-rsa py3-requests py3-six py3-websocket-client
+        apk add python3 python3-dev py3-pip py3-psutil py3-gevent py3-openssl py3-paramiko py3-flask py3-rsa py3-requests py3-six py3-websocket-client
 
         # 创建虚拟环境
         python3 -m venv $pyenv_path/pyenv
