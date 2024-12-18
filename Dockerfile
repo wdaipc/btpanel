@@ -41,8 +41,8 @@ RUN echo btpanel | bt 6 \
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 
-# 暴漏所有端口
-EXPOSE 0-65535
+# 暴漏特定端口
+EXPOSE 22 80 443 888 3306 8888
 
 # 健康检查
 HEALTHCHECK --interval=5s --timeout=3s CMD prot="http"; if [ -f "/www/server/panel/data/ssl.pl" ]; then prot="https"; fi; curl -k -i $prot://127.0.0.1:$(cat /www/server/panel/data/port.pl)$(cat /www/server/panel/data/admin_path.pl) | grep -E '(200|404)' || exit 1
