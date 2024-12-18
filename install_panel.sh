@@ -825,179 +825,172 @@ Get_Versions(){
 	fi
 }
 Install_Python_Lib(){
-	curl -Ss --connect-timeout 3 -m 60 $download_Url/install/pip_select.sh|bash
-	pyenv_path="/www/server/panel"
-	if [ -f $pyenv_path/pyenv/bin/python ];then
-	 	is_ssl=$($python_bin -c "import ssl" 2>&1|grep cannot)
-		$pyenv_path/pyenv/bin/python3.7 -V
-		if [ $? -eq 0 ] && [ -z "${is_ssl}" ];then
-			chmod -R 700 $pyenv_path/pyenv/bin
-			is_package=$($python_bin -m psutil 2>&1|grep package)
-			if [ "$is_package" = "" ];then
-				wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip.txt -T 15
-				$pyenv_path/pyenv/bin/pip install -U pip
-				$pyenv_path/pyenv/bin/pip install -U setuptools==65.5.0
-				$pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
-			fi
-			source $pyenv_path/pyenv/bin/activate
-			chmod -R 700 $pyenv_path/pyenv/bin
-			return
-		else
-			rm -rf $pyenv_path/pyenv
-		fi
-	fi
+    curl -Ss --connect-timeout 3 -m 60 $download_Url/install/pip_select.sh|bash
+    pyenv_path="/www/server/panel"
+    if [ -f $pyenv_path/pyenv/bin/python ];then
+     	is_ssl=$($python_bin -c "import ssl" 2>&1|grep cannot)
+        $pyenv_path/pyenv/bin/python3.7 -V
+        if [ $? -eq 0 ] && [ -z "${is_ssl}" ];then
+            chmod -R 700 $pyenv_path/pyenv/bin
+            is_package=$($python_bin -m psutil 2>&1|grep package)
+            if [ "$is_package" = "" ];then
+                wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip.txt -T 15
+                $pyenv_path/pyenv/bin/pip install -U pip
+                $pyenv_path/pyenv/bin/pip install -U setuptools==65.5.0
+                $pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
+            fi
+            source $pyenv_path/pyenv/bin/activate
+            chmod -R 700 $pyenv_path/pyenv/bin
+            return
+        else
+            rm -rf $pyenv_path/pyenv
+        fi
+    fi
 
-	is_loongarch64=$(uname -a|grep loongarch64)
-	if [ "$is_loongarch64" != "" ] && [ -f "/usr/bin/yum" ];then
-		yumPacks="python3-devel python3-pip python3-psutil python3-gevent python3-pyOpenSSL python3-paramiko python3-flask python3-rsa python3-requests python3-six python3-websocket-client"
-		yum install -y ${yumPacks}
-		for yumPack in ${yumPacks}
-		do
-			rpmPack=$(rpm -q ${yumPack})
-			packCheck=$(echo ${rpmPack}|grep not)
-			if [ "${packCheck}" ]; then
-				yum install ${yumPack} -y
-			fi
-		done
+    # 针对 Alpine Linux 系统的安装方式
+    is_alpine=$(cat /etc/os-release | grep -i alpine)
+    if [ "$is_alpine" != "" ];then
+        apk update
+        apk add python3 python3-dev py3-pip py3-psutil py3-gevent py3-pyopenssl py3-paramiko py3-flask py3-rsa py3-requests py3-six py3-websocket-client
 
-		pip3 install -U pip
-		pip3 install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
-		pip3 install flask==1.1.4
-		pip3 install Pillow -U
+        pip3 install -U pip
+        pip3 install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
+        pip3 install flask==1.1.4
+        pip3 install Pillow -U
 
-		pyenv_bin=/www/server/panel/pyenv/bin
-		mkdir -p $pyenv_bin
-		ln -sf /usr/local/bin/pip3 $pyenv_bin/pip
-		ln -sf /usr/local/bin/pip3 $pyenv_bin/pip3
-		ln -sf /usr/local/bin/pip3 $pyenv_bin/pip3.7
+        pyenv_bin=/www/server/panel/pyenv/bin
+        mkdir -p $pyenv_bin
+        ln -sf /usr/bin/pip3 $pyenv_bin/pip
+        ln -sf /usr/bin/pip3 $pyenv_bin/pip3
+        ln -sf /usr/bin/pip3 $pyenv_bin/pip3.7
 
-		if [ -f "/usr/bin/python3.7" ];then
-			ln -sf /usr/bin/python3.7 $pyenv_bin/python
-			ln -sf /usr/bin/python3.7 $pyenv_bin/python3
-			ln -sf /usr/bin/python3.7 $pyenv_bin/python3.7
-		elif [ -f "/usr/bin/python3.6"  ]; then
-			ln -sf /usr/bin/python3.6 $pyenv_bin/python
-			ln -sf /usr/bin/python3.6 $pyenv_bin/python3
-			ln -sf /usr/bin/python3.6 $pyenv_bin/python3.7
-		fi
+        if [ -f "/usr/bin/python3.12" ];then
+            ln -sf /usr/bin/python3.12 $pyenv_bin/python
+            ln -sf /usr/bin/python3.12 $pyenv_bin/python3
+            ln -sf /usr/bin/python3.12 $pyenv_bin/python3.7
+        elif [ -f "/usr/bin/python3.6"  ]; then
+            ln -sf /usr/bin/python3.6 $pyenv_bin/python
+            ln -sf /usr/bin/python3.6 $pyenv_bin/python3
+            ln -sf /usr/bin/python3.6 $pyenv_bin/python3.7
+        fi
 
-		echo > $pyenv_bin/activate
+        echo > $pyenv_bin/activate
 
-		return
-	fi
+        return
+    fi
 
-	py_version="3.7.16"
-	mkdir -p $pyenv_path
-	echo "True" > /www/disk.pl
-	if [ ! -w /www/disk.pl ];then
-		Red_Error "ERROR: Install python env fielded." "ERROR: /www目录无法写入，请检查目录/用户/磁盘权限！"
-	fi
-	os_type='el'
-	os_version='7'
-	is_export_openssl=0
-	Get_Versions
+    py_version="3.7.16"
+    mkdir -p $pyenv_path
+    echo "True" > /www/disk.pl
+    if [ ! -w /www/disk.pl ];then
+        Red_Error "ERROR: Install python env fielded." "ERROR: /www目录无法写入，请检查目录/用户/磁盘权限！"
+    fi
+    os_type='el'
+    os_version='7'
+    is_export_openssl=0
+    Get_Versions
 
-	echo "OS: $os_type - $os_version"
-	is_aarch64=$(uname -a|grep aarch64)
-	if [ "$is_aarch64" != "" ];then
-		is64bit="aarch64"
-	fi
-	
-	if [ -f "/www/server/panel/pymake.pl" ];then
-		os_version=""
-		rm -f /www/server/panel/pymake.pl
-	fi	
-	echo "==============================================="
-	echo "正在下载面板运行环境，请稍等..............."
-	echo "==============================================="
-	if [ "${os_version}" != "" ];then
-		pyenv_file="/www/pyenv.tar.gz"
-		wget -O $pyenv_file $download_Url/install/pyenv/pyenv-${os_type}${os_version}-x${is64bit}.tar.gz -T 20
-		if [ "$?" != "0" ];then
-			get_node_url $download_Url
-			wget -O $pyenv_file $download_Url/install/pyenv/pyenv-${os_type}${os_version}-x${is64bit}.tar.gz -T 20
-		fi
-		tmp_size=$(du -b $pyenv_file|awk '{print $1}')
-		if [ $tmp_size -lt 703460 ];then
-			rm -f $pyenv_file
-			echo "ERROR: Download python env fielded."
-		else
-			echo "Install python env..."
-			tar zxvf $pyenv_file -C $pyenv_path/ > /dev/null
-			chmod -R 700 $pyenv_path/pyenv/bin
-			if [ ! -f $pyenv_path/pyenv/bin/python ];then
-				rm -f $pyenv_file
-				Red_Error "ERROR: Install python env fielded." "ERROR: 下载宝塔运行环境失败，请尝试重新安装！" 
-			fi
-			$pyenv_path/pyenv/bin/python3.7 -V
-			if [ $? -eq 0 ];then
-				rm -f $pyenv_file
-				ln -sf $pyenv_path/pyenv/bin/pip3.7 /usr/bin/btpip
-				ln -sf $pyenv_path/pyenv/bin/python3.7 /usr/bin/btpython
-				source $pyenv_path/pyenv/bin/activate
-				return
-			else
-				rm -f $pyenv_file
-				rm -rf $pyenv_path/pyenv
-			fi
-		fi
-	fi
+    echo "OS: $os_type - $os_version"
+    is_aarch64=$(uname -a|grep aarch64)
+    if [ "$is_aarch64" != "" ];then
+        is64bit="aarch64"
+    fi
+    
+    if [ -f "/www/server/panel/pymake.pl" ];then
+        os_version=""
+        rm -f /www/server/panel/pymake.pl
+    fi	
+    echo "==============================================="
+    echo "正在下载面板运行环境，请稍等..............."
+    echo "==============================================="
+    if [ "${os_version}" != "" ];then
+        pyenv_file="/www/pyenv.tar.gz"
+        wget -O $pyenv_file $download_Url/install/pyenv/pyenv-${os_type}${os_version}-x${is64bit}.tar.gz -T 20
+        if [ "$?" != "0" ];then
+            get_node_url $download_Url
+            wget -O $pyenv_file $download_Url/install/pyenv/pyenv-${os_type}${os_version}-x${is64bit}.tar.gz -T 20
+        fi
+        tmp_size=$(du -b $pyenv_file|awk '{print $1}')
+        if [ $tmp_size -lt 703460 ];then
+            rm -f $pyenv_file
+            echo "ERROR: Download python env fielded."
+        else
+            echo "Install python env..."
+            tar zxvf $pyenv_file -C $pyenv_path/ > /dev/null
+            chmod -R 700 $pyenv_path/pyenv/bin
+            if [ ! -f $pyenv_path/pyenv/bin/python ];then
+                rm -f $pyenv_file
+                Red_Error "ERROR: Install python env fielded." "ERROR: 下载宝塔运行环境失败，请尝试重新安装！" 
+            fi
+            $pyenv_path/pyenv/bin/python3.7 -V
+            if [ $? -eq 0 ];then
+                rm -f $pyenv_file
+                ln -sf $pyenv_path/pyenv/bin/pip3.7 /usr/bin/btpip
+                ln -sf $pyenv_path/pyenv/bin/python3.7 /usr/bin/btpython
+                source $pyenv_path/pyenv/bin/activate
+                return
+            else
+                rm -f $pyenv_file
+                rm -rf $pyenv_path/pyenv
+            fi
+        fi
+    fi
 
-	cd /www
-	python_src='/www/python_src.tar.xz'
-	python_src_path="/www/Python-${py_version}"
-	wget -O $python_src $download_Url/src/Python-${py_version}.tar.xz -T 15
-	tmp_size=$(du -b $python_src|awk '{print $1}')
-	if [ $tmp_size -lt 10703460 ];then
-		rm -f $python_src
-		Red_Error "ERROR: Download python source code fielded." "ERROR: 下载宝塔运行环境失败，请尝试重新安装！"
-	fi
-	tar xvf $python_src
-	rm -f $python_src
-	cd $python_src_path
-	./configure --prefix=$pyenv_path/pyenv
-	make -j$cpu_cpunt
-	make install
-	if [ ! -f $pyenv_path/pyenv/bin/python3.7 ];then
-		rm -rf $python_src_path
-		Red_Error "ERROR: Make python env fielded." "ERROR: 编译宝塔运行环境失败！"
-	fi
-	cd ~
-	rm -rf $python_src_path
-	wget -O $pyenv_path/pyenv/bin/activate $download_Url/install/pyenv/activate.panel -T 5
-	wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip-3.7.16.txt -T 5
-	ln -sf $pyenv_path/pyenv/bin/pip3.7 $pyenv_path/pyenv/bin/pip
-	ln -sf $pyenv_path/pyenv/bin/python3.7 $pyenv_path/pyenv/bin/python
-	ln -sf $pyenv_path/pyenv/bin/pip3.7 /usr/bin/btpip
-	ln -sf $pyenv_path/pyenv/bin/python3.7 /usr/bin/btpython
-	chmod -R 700 $pyenv_path/pyenv/bin
-	$pyenv_path/pyenv/bin/pip install -U pip
-	$pyenv_path/pyenv/bin/pip install -U setuptools==65.5.0
-	$pyenv_path/pyenv/bin/pip install -U wheel==0.34.2 
-	$pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
+    cd /www
+    python_src='/www/python_src.tar.xz'
+    python_src_path="/www/Python-${py_version}"
+    wget -O $python_src $download_Url/src/Python-${py_version}.tar.xz -T 15
+    tmp_size=$(du -b $python_src|awk '{print $1}')
+    if [ $tmp_size -lt 10703460 ];then
+        rm -f $python_src
+        Red_Error "ERROR: Download python source code fielded." "ERROR: 下载宝塔运行环境失败，请尝试重新安装！"
+    fi
+    tar xvf $python_src
+    rm -f $python_src
+    cd $python_src_path
+    ./configure --prefix=$pyenv_path/pyenv
+    make -j$cpu_cpunt
+    make install
+    if [ ! -f $pyenv_path/pyenv/bin/python3.7 ];then
+        rm -rf $python_src_path
+        Red_Error "ERROR: Make python env fielded." "ERROR: 编译宝塔运行环境失败！"
+    fi
+    cd ~
+    rm -rf $python_src_path
+    wget -O $pyenv_path/pyenv/bin/activate $download_Url/install/pyenv/activate.panel -T 5
+    wget -O $pyenv_path/pyenv/pip.txt $download_Url/install/pyenv/pip-3.7.16.txt -T 5
+    ln -sf $pyenv_path/pyenv/bin/pip3.7 $pyenv_path/pyenv/bin/pip
+    ln -sf $pyenv_path/pyenv/bin/python3.7 $pyenv_path/pyenv/bin/python
+    ln -sf $pyenv_path/pyenv/bin/pip3.7 /usr/bin/btpip
+    ln -sf $pyenv_path/pyenv/bin/python3.7 /usr/bin/btpython
+    chmod -R 700 $pyenv_path/pyenv/bin
+    $pyenv_path/pyenv/bin/pip install -U pip
+    $pyenv_path/pyenv/bin/pip install -U setuptools==65.5.0
+    $pyenv_path/pyenv/bin/pip install -U wheel==0.34.2 
+    $pyenv_path/pyenv/bin/pip install -r $pyenv_path/pyenv/pip.txt
 
-	wget -O pip-packs.txt $download_Url/install/pyenv/pip-packs.txt
-	PIP_PACKS=$(cat pip-packs.txt)
-	for P_PACK in ${PIP_PACKS};
-	do
-		btpip show ${P_PACK} > /dev/null 2>&1
-		if [ "$?" == "1" ];then
-			btpip install ${P_PACK}
-		fi 
-	done
+    wget -O pip-packs.txt $download_Url/install/pyenv/pip-packs.txt
+    PIP_PACKS=$(cat pip-packs.txt)
+    for P_PACK in ${PIP_PACKS};
+    do
+        btpip show ${P_PACK} > /dev/null 2>&1
+        if [ "$?" == "1" ];then
+            btpip install ${P_PACK}
+        fi 
+    done
 
-	rm -f pip-packs.txt
+    rm -f pip-packs.txt
 
-	source $pyenv_path/pyenv/bin/activate
+    source $pyenv_path/pyenv/bin/activate
 
-	btpip install psutil
-	btpip install gevent
+    btpip install psutil
+    btpip install gevent
 
-	is_gevent=$($python_bin -m gevent 2>&1|grep -oE package)
-	is_psutil=$($python_bin -m psutil 2>&1|grep -oE package)
-	if [ "${is_gevent}" != "${is_psutil}" ];then
-		Red_Error "ERROR: psutil/gevent install failed!"
-	fi
+    is_gevent=$($python_bin -m gevent 2>&1|grep -oE package)
+    is_psutil=$($python_bin -m psutil 2>&1|grep -oE package)
+    if [ "${is_gevent}" != "${is_psutil}" ];then
+        Red_Error "ERROR: psutil/gevent install failed!"
+    fi
 }
 Install_Bt(){
 	if [ -f ${setup_path}/server/panel/data/port.pl ];then
@@ -1358,7 +1351,7 @@ Install_Main(){
 		Install_Deb_Pack
 	fi
 
-	# Install_Python_Lib
+	Install_Python_Lib
 	Install_Bt
 	
 
@@ -1506,6 +1499,5 @@ fi
 if [ "${INSTALL_DATE}" ];then
 	curl -sS --connect-timeout 3 -m 3 --request POST --url "https://www.bt.cn/Api/installationCount" --data "date=${INSTALL_DATE}" --data "status=1" --data "ip=${getIpAddress}" > /dev/null
 fi
-
 
 
