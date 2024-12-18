@@ -11,7 +11,7 @@ ENV pyenv_path="/www/server/panel"
 ENV PATH="$pyenv_path/bin:$PATH"
 
 # 确保虚拟环境中的python和pip具有执行权限
-RUN chmod -R 755 $pyenv_path/pyenv/bin/
+RUN chmod -R 777 $pyenv_path/pyenv/bin/
 
 # 安装Python和pip包
 RUN pip install --upgrade pip \
