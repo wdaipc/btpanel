@@ -2,7 +2,7 @@ FROM python:3.7.17-alpine
 
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
 RUN apk update && apk upgrade \
-    && apk add openrc openssh curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev linux-headers \
+    && apk add openrc openssh curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers \
     && apk cache clean \
     && rm -rf /var/cache/apk/*
 
@@ -18,7 +18,10 @@ RUN echo y | bash /install_panel.sh -P 8888 --ssl-disable \
     && echo "docker_bt_alpine" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
     && chmod +x /bt.sh \
-    && chmod +x /init_mysql.sh
+    && chmod +x /init_mysql.sh \
+    && apk del g++ make build-base \
+    && apk cache clean \
+    && rm -rf /var/cache/apk/*
 
 # 配置宝塔面板安全入口和用户名及密码，以及 SSH 密码
 RUN echo btpanel | bt 6 \
