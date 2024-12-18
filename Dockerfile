@@ -19,7 +19,6 @@ RUN echo y | bash /install_panel.sh -P 8888 --ssl-disable \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
     && chmod +x /bt.sh \
     && chmod +x /init_mysql.sh \
-    && apk del g++ make build-base \
     && apk cache clean \
     && rm -rf /var/cache/apk/*
 
