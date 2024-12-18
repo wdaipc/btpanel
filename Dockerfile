@@ -1,8 +1,8 @@
-FROM alpine
+FROM python:3.7.16-alpine
 
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
 RUN apk update && apk upgrade \
-    && apk add curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers python3 python3-dev py3-pip \
+    && apk add curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers \
     && rm -rf /var/cache/apk/*
 
 # 复制脚本
