@@ -1344,7 +1344,7 @@ Install_Main(){
 		Install_Deb_Pack
 	fi
 
-	# Install_Python_Lib
+	Install_Python_Lib
 	Install_Bt
 	
 
@@ -1492,5 +1492,3 @@ fi
 if [ "${INSTALL_DATE}" ];then
 	curl -sS --connect-timeout 3 -m 3 --request POST --url "https://www.bt.cn/Api/installationCount" --data "date=${INSTALL_DATE}" --data "status=1" --data "ip=${getIpAddress}" > /dev/null
 fi
-
-
