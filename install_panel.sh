@@ -828,7 +828,7 @@ Install_Python_Lib(){
     curl -Ss --connect-timeout 3 -m 60 $download_Url/install/pip_select.sh|bash
     pyenv_path="/www/server/panel"
     if [ -f $pyenv_path/pyenv/bin/python ];then
-     	is_ssl=$($python_bin -c "import ssl" 2>&1|grep cannot)
+        is_ssl=$($python_bin -c "import ssl" 2>&1|grep cannot)
         $pyenv_path/pyenv/bin/python3.7 -V
         if [ $? -eq 0 ] && [ -z "${is_ssl}" ];then
             chmod -R 700 $pyenv_path/pyenv/bin
@@ -853,26 +853,19 @@ Install_Python_Lib(){
         apk update
         apk add python3 python3-dev py3-pip py3-psutil py3-gevent py3-pyopenssl py3-paramiko py3-flask py3-rsa py3-requests py3-six py3-websocket-client
 
-        pip3 install -U pip
-        pip3 install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
-        pip3 install flask==1.1.4
-        pip3 install Pillow -U
+        # 创建虚拟环境
+        python3 -m venv $pyenv_path/pyenv
+        source $pyenv_path/pyenv/bin/activate
 
-        pyenv_bin=/www/server/panel/pyenv/bin
+        pip install -U pip
+        pip install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
+        pip install flask==1.1.4
+        pip install Pillow -U
+
+        pyenv_bin=$pyenv_path/pyenv/bin
         mkdir -p $pyenv_bin
-        ln -sf /usr/bin/pip3 $pyenv_bin/pip
-        ln -sf /usr/bin/pip3 $pyenv_bin/pip3
-        ln -sf /usr/bin/pip3 $pyenv_bin/pip3.7
-
-        if [ -f "/usr/bin/python3.12" ];then
-            ln -sf /usr/bin/python3.12 $pyenv_bin/python
-            ln -sf /usr/bin/python3.12 $pyenv_bin/python3
-            ln -sf /usr/bin/python3.12 $pyenv_bin/python3.7
-        elif [ -f "/usr/bin/python3.6"  ]; then
-            ln -sf /usr/bin/python3.6 $pyenv_bin/python
-            ln -sf /usr/bin/python3.6 $pyenv_bin/python3
-            ln -sf /usr/bin/python3.6 $pyenv_bin/python3.7
-        fi
+        ln -sf $pyenv_bin/pip3 /usr/bin/btpip
+        ln -sf $pyenv_bin/python3 /usr/bin/btpython
 
         echo > $pyenv_bin/activate
 
@@ -1351,7 +1344,7 @@ Install_Main(){
 		Install_Deb_Pack
 	fi
 
-	Install_Python_Lib
+	# Install_Python_Lib
 	Install_Bt
 	
 
