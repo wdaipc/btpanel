@@ -32,7 +32,8 @@ soft_start(){
 
     pkill crond
     /sbin/crond
-
+    
+    ssh-keygen -A
     chmod 600 /etc/ssh/ssh_host_*
     /usr/sbin/sshd -D &
 }
