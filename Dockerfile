@@ -2,7 +2,7 @@ FROM python:3.7.17-alpine
 
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
 RUN apk update && apk upgrade \
-    && apk add openrc openssh curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers \
+    && apk add openrc openssh curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers gd-dev \
     && apk cache clean \
     && rm -rf /var/cache/apk/*
 
@@ -26,7 +26,9 @@ RUN echo y | bash /install_panel.sh -P 8888 --ssl-disable \
 RUN echo btpanel | bt 6 \
     && echo btpaneldocker | bt 5 \
     && echo "/btpanel" > /www/server/panel/data/admin_path.pl \
-    && echo "root:btpaneldocker" | chpasswd
+    && echo "root:btpaneldocker" | chpasswd \
+    && echo "PermitRootLogin yes" | tee -a /etc/sshd_config
+
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 

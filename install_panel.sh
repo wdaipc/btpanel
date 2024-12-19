@@ -848,27 +848,14 @@ Install_Python_Lib(){
     fi
 
     # 针对 Alpine Linux 系统的安装方式
-	is_alpine=$(cat /etc/os-release | grep -i alpine)
+    is_alpine=$(cat /etc/os-release | grep -i alpine)
 	if [ "$is_alpine" != "" ];then
-		apk update
-		apk add build-base wget zlib-dev bzip2-dev openssl-dev ncurses-dev libffi-dev xz-dev
-	
-		# 下载并编译 Python 3.7.16
-		cd /usr/src
-		wget https://www.python.org/ftp/python/3.7.16/Python-3.7.16.tar.xz
-		tar xf Python-3.7.16.tar.xz
-		cd Python-3.7.16
-		./configure --enable-optimizations
-		make altinstall
-	
 		# 创建虚拟环境
 		python3.7 -m venv $pyenv_path/pyenv
 		source $pyenv_path/pyenv/bin/activate
 	
 		pip install -U pip
-		pip install Pillow psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
-		pip install flask==1.1.4
-		pip install Pillow -U
+		pip install Pillow chardet pycrypto paramiko flask psutil pyinotify pycryptodome upyun oss2 pymysql qrcode qiniu redis pymongo Cython configparser cos-python-sdk-v5 supervisor gevent-websocket pyopenssl
 	
 		pyenv_bin=$pyenv_path/pyenv/bin
 		mkdir -p $pyenv_bin
@@ -1500,4 +1487,3 @@ fi
 if [ "${INSTALL_DATE}" ];then
 	curl -sS --connect-timeout 3 -m 3 --request POST --url "https://www.bt.cn/Api/installationCount" --data "date=${INSTALL_DATE}" --data "status=1" --data "ip=${getIpAddress}" > /dev/null
 fi
-
