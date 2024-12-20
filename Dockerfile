@@ -1,7 +1,8 @@
 FROM python:3.7.16-alpine
 
 # 切换 alpine 镜像源为腾讯云源，更新包列表并安装依赖
-RUN apk update && apk upgrade \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tencent.com/g' /etc/apk/repositories \
+    && apk update && apk upgrade \
     && apk add openrc openssh curl curl-dev libffi-dev openssl-dev shadow bash zlib-dev g++ make sqlite-dev libpcap-dev jpeg-dev dos2unix libev-dev build-base linux-headers gd-dev \
     && apk cache clean \
     && rm -rf /var/cache/apk/*
