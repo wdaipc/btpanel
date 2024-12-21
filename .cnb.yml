@@ -45,8 +45,10 @@ $:
           type: cnb:resolve
           options:
             key: build-arm64
-
-    - services:
+    - runner:
+        tags: cnb:arch:amd64:v8
+        cpus: 2
+      services:
         - docker
       imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
