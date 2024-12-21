@@ -17,10 +17,10 @@ RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list \
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "/"]
-COPY ["phpmyadmin.sh", "/lnmp/"]
+COPY ["phpmyadmin.sh","mysql.sh", "/lnmp/"]
 
 # 转换启动脚本
-RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
+RUN dos2unix /bt.sh && dos2unix /init_mysql.sh && dos2unix /lnmp/phpmyadmin.sh && dos2unix /lnmp/mysql.sh
 
 # 下载并安装宝塔面板及 lnmp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
@@ -29,7 +29,6 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && sh /lnmp/nginx.sh install openresty \ 
     && curl -o /lnmp/php.sh https://download.bt.cn/install/3/php.sh \
     && sh /lnmp/php.sh install 8.3 \
-    && curl -o /lnmp/mysql.sh https://download.bt.cn/install/3/mysql.sh \
     && sh /lnmp/mysql.sh install 8.0 \
     && sh /lnmp/phpmyadmin.sh install 5.2 \
     && rm -rf /lnmp \
