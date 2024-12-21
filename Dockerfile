@@ -17,10 +17,10 @@ RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list \
 
 # 复制脚本
 COPY ["bt.sh", "init_mysql.sh", "mysql.sh", "/"]
-COPY ["phpmyadmin.sh", "/lamp/"]
+COPY ["phpmyadmin.sh","mysql.sh", "/lamp/"]
 
 # 转换启动脚本
-RUN dos2unix /bt.sh && dos2unix /init_mysql.sh && dos2unix /mysql.sh && dos2unix /phpmyadmin.sh
+RUN dos2unix /bt.sh && dos2unix /init_mysql.sh && dos2unix /lamp/phpmyadmin.sh && dos2unix /lamp/mysql.sh
 
 # 下载并安装宝塔面板及 lamp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
