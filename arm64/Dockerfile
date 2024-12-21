@@ -20,7 +20,7 @@ COPY ["bt.sh", "init_mysql.sh", "/"]
 COPY ["phpmyadmin.sh", "/lnmp/"]
 
 # 转换启动脚本
-RUN dos2unix /bt.sh && dos2unix /init_mysql.sh && dos2unix /lnmp/phpmyadmin.sh && dos2unix /lnmp/mysql.sh
+RUN dos2unix /bt.sh && dos2unix /init_mysql.sh && dos2unix /lnmp/phpmyadmin.sh
 
 # 下载并安装宝塔面板及 lnmp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
