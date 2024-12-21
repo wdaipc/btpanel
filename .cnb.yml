@@ -18,6 +18,7 @@ $:
           script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
         - name: docker build
           script: docker build -t ${IMAGE_TAG} .
+          timeout: 3600s
         - name: docker push
           script: docker push ${IMAGE_TAG}
         - name: resolve
@@ -45,7 +46,9 @@ $:
           type: cnb:resolve
           options:
             key: build-arm64
-
+    - runner:
+        tags: cnb:arch:amd64
+        cpus: 2
     - services:
         - docker
       imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
