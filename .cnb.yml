@@ -17,6 +17,7 @@ $:
         - name: docker login
           script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
         - name: docker build
+          timeout: 3600s
           script: docker build -t ${IMAGE_TAG} .
         - name: docker push
           script: docker push ${IMAGE_TAG}
@@ -46,7 +47,7 @@ $:
           options:
             key: build-arm64
     - runner:
-        tags: cnb:arch:amd64:v8
+        tags: cnb:arch:amd64
         cpus: 2
       services:
         - docker
