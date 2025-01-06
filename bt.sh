@@ -8,6 +8,13 @@ Setup_Path=$Root_Path/server/mysql
 Data_Path=$Root_Path/server/data
 O_pl=$(cat /www/server/panel/data/o.pl)
 
+restore_panel_data() {
+  if [ -f /www.tar.gz ]; then
+    tar xzf /www.tar.gz -C / --skip-old-files
+    rm -rf /www.tar.gz
+  fi
+}
+
 soft_start(){
     # 扫描并启动所有服务
     init_scripts=$(ls ${init_path})
@@ -68,6 +75,7 @@ start_mysql(){
     fi
 }
 
+restore_panel_data > /dev/null
 is_empty_Data > /dev/null
 init_mysql > /dev/null
 start_mysql > /dev/null
