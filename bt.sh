@@ -10,8 +10,10 @@ O_pl=$(cat /www/server/panel/data/o.pl)
 
 restore_panel_data() {
   if [ -f /www.tar.gz ]; then
-    tar xzf /www.tar.gz -C / --skip-old-files
-    rm -rf /www.tar.gz
+    if [ ! -d /www ] || [ -z "$(ls -A /www)" ] || [ ! -d /www/server/panel ] || [ -z "$(ls -A /www/server/panel)" ] || [ ! -d /www/server/panel/pyenv ] || [ -z "$(ls -A /www/server/panel/pyenv)" ]; then
+      tar xzf /www.tar.gz -C / --skip-old-files
+      rm -rf /www.tar.gz
+    fi
   fi
 }
 
