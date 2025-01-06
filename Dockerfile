@@ -40,7 +40,8 @@ RUN echo btpanel | bt 6 \
     && echo "root:btpaneldocker" | chpasswd
 
 # 打包宝塔面板，并清除www
-RUN tar -zcf /www.tar.gz /www \
+RUN bt 2 \
+    && tar -zcf /www.tar.gz /www \
     && rm -rf /www
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
