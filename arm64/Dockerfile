@@ -19,6 +19,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 # 下载并安装宝塔面板及 lnmp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
+    && btpip config set global.index-url https://mirrors.tencent.com/pypi/simple \
     && mkdir /lnmp \
     && curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
     && bash /lnmp/nginx.sh install openresty \ 
@@ -28,6 +29,7 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo '["memuA", "memuAsite", "memuAwp", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /www/reserve_space.pl \
     && chmod +x /bt.sh \
     && chmod +x /init_mysql.sh
     
@@ -37,6 +39,10 @@ RUN echo btpanel | bt 6 \
     && echo btpaneldocker | bt 5 \
     && echo "/btpanel" > /www/server/panel/data/admin_path.pl \
     && echo "root:btpaneldocker" | chpasswd
+
+# 打包宝塔面板，并清除www
+RUN tar -zcf /www.tar.gz /www \
+    && rm -rf /www
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 
