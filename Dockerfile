@@ -1,7 +1,7 @@
 FROM docker.cnb.cool/btpanel/btpanel:9.0_lts_fresh
     
 # 安装 lib 库
-RUN curl -o /www/server/panel/install/lib.sh http://download.bt.cn/install/0/lib.sh  \
+RUN curl -o /www/server/panel/install/lib.sh https://dg2.bt.cn/install/1/lib.sh  \
     && sh /www/server/panel/install/lib.sh \
     && chmod +x /bt.sh \
     && chmod +x /init_mysql.sh
