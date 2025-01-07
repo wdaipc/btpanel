@@ -19,8 +19,6 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 RUN curl -sSO https://download.bt.cn/install/install_lts.sh \
     && echo y | bash install_lts.sh -P 8888 --ssl-disable \
     && btpip config set global.index-url https://mirrors.tencent.com/pypi/simple \
-    && curl -o /www/server/panel/install/lib.sh http://download.bt.cn/install/0/lib.sh  \
-    && sh /www/server/panel/install/lib.sh \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_ltsd12" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
@@ -28,8 +26,11 @@ RUN curl -sSO https://download.bt.cn/install/install_lts.sh \
     && rm -rf /var/lib/apt/lists/* \
     && chmod +x /bt.sh \
     && chmod +x /init_mysql.sh
-    
 
+# 安装 lib 库
+RUN curl -o /www/server/panel/install/lib.sh http://download.bt.cn/install/0/lib.sh  \
+    && sh /www/server/panel/install/lib.sh 
+    
 # 配置宝塔面板安全入口和用户名及密码，以及 SSH 密码
 RUN echo btpanel | bt 6 \
     && echo btpaneldocker | bt 5 \
