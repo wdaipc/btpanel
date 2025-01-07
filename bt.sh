@@ -8,6 +8,15 @@ Setup_Path=$Root_Path/server/mysql
 Data_Path=$Root_Path/server/data
 O_pl=$(cat /www/server/panel/data/o.pl)
 
+backup_database() {
+  if [ -d "${Data_Path}" ] && [ ! -z "$(ls -A ${Data_Path})" ]; then
+    if [ ! -d /www/server/mysql ] || [ -z "$(ls -A /www/server/mysql)" ]; then
+      timestamp=$(date +"%Y%m%d%H%M%S")
+      tar czf /www/server/data_backup_$timestamp.tar.gz -C ${Data_Path} .
+    fi
+  fi
+}
+
 restore_panel_data() {
   if [ -f /www.tar.gz ]; then
     if [ ! -d /www ] || [ -z "$(ls -A /www)" ] || [ ! -d /www/server/panel ] || [ -z "$(ls -A /www/server/panel)" ] || [ ! -d /www/server/panel/pyenv ] || [ -z "$(ls -A /www/server/panel/pyenv)" ]; then
@@ -77,7 +86,9 @@ start_mysql(){
     fi
 }
 
+
 restore_panel_data > /dev/null
+backup_database > /dev/null
 is_empty_Data > /dev/null
 init_mysql > /dev/null
 start_mysql > /dev/null
