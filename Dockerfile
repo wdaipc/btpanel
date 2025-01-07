@@ -24,6 +24,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 # 下载并安装宝塔面板及 lnmp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
+    && btpip config set global.index-url https://mirrors.tencent.com/pypi/simple \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_d12" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
