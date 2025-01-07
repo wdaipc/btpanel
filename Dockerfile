@@ -19,6 +19,8 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 RUN curl -sSO https://download.bt.cn/install/install_lts.sh \
     && echo y | bash install_lts.sh -P 8888 --ssl-disable \
     && btpip config set global.index-url https://mirrors.tencent.com/pypi/simple \
+    && curl -o /www/server/panel/install/lib.sh http://download.bt.cn/install/0/lib.sh  \
+    && sh /www/server/panel/install/lib.sh \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_ltsd12" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \

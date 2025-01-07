@@ -12,7 +12,7 @@ $:
     #     - docker
     #   imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
     #   env:
-    #     IMAGE_TAG: btpanel/baota:9.0_lts_fresh-linux-amd64
+    #     IMAGE_TAG: btpanel/baota:9.0_lts_lib-linux-amd64
     #   stages:
     #     - name: docker login
     #       script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
@@ -31,7 +31,7 @@ $:
     #     - docker
     #   imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
     #   env:
-    #     IMAGE_TAG: btpanel/baota:9.0_lts_fresh-linux-arm64
+    #     IMAGE_TAG: btpanel/baota:9.0_lts_lib-linux-arm64
     #   stages:
     #     - name: docker login
     #       script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
@@ -48,7 +48,7 @@ $:
     #     - docker
     #   imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
     #   env:
-    #     IMAGE_TAG: btpanel/baota:9.0_lts_fresh
+    #     IMAGE_TAG: btpanel/baota:9.0_lts_lib
     #   stages:
     #     - name: await the amd64
     #       type: cnb:await
@@ -83,7 +83,7 @@ $:
       services:
         - docker
       env:
-        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:9.0_lts_fresh-linux-amd64
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:9.0_lts_lib-linux-amd64
       stages:
         - name: docker login
           script: docker login -u ${CNB_TOKEN_USER_NAME} -p "${CNB_TOKEN}" ${CNB_DOCKER_REGISTRY}
@@ -101,7 +101,7 @@ $:
       services:
         - docker
       env:
-        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:9.0_lts_fresh-linux-arm64
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:9.0_lts_lib-linux-arm64
       stages:
         - name: docker login
           script: docker login -u ${CNB_TOKEN_USER_NAME} -p "${CNB_TOKEN}" ${CNB_DOCKER_REGISTRY}
@@ -120,7 +120,7 @@ $:
       services:
         - docker
       env:
-        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:9.0_lts_fresh
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:9.0_lts_lib
       stages:
         - name: await the amd64
           type: cnb:await
@@ -145,6 +145,6 @@ $:
           options:
             name: ${CNB_REPO_NAME}
             tags:
-              - 9.0_lts_fresh-linux-amd64
-              - 9.0_lts_fresh-linux-arm64
+              - 9.0_lts_lib-linux-amd64
+              - 9.0_lts_lib-linux-arm64
             type: docker
