@@ -1,42 +1,11 @@
-FROM debian:bookworm
-
-# 切换 Debian 镜像源为腾讯云源，更新包列表并安装依赖
-RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources \
-    && apt update && apt upgrade -y \
-    && apt install -y \
-    locales \
-    wget openssh-server cmake make gcc g++ autoconf sudo curl dos2unix build-essential \
-    && apt clean \
-    && rm -rf /var/lib/apt/lists/* 
-
-# 复制脚本
-COPY ["bt.sh", "init_mysql.sh", "/"]
-
-# 转换启动脚本
-RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
-
-# 下载并安装宝塔面板及 lnmp 环境
-RUN curl -sSO https://download.bt.cn/install/install_lts.sh \
-    && echo y | bash install_lts.sh -P 8888 --ssl-disable \
-    && btpip config set global.index-url https://mirrors.tencent.com/pypi/simple \
-    && rm -rf /www/server/data/* \
-    && echo "docker_bt_ltsd12" > /www/server/panel/data/o.pl \
-    && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
-    && apt clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && chmod +x /bt.sh \
-    && chmod +x /init_mysql.sh
-
+FROM docker.cnb.cool/btpanel/btpanel:9.0_lts_fresh
+    
 # 安装 lib 库
 RUN curl -o /www/server/panel/install/lib.sh http://download.bt.cn/install/0/lib.sh  \
-    && sh /www/server/panel/install/lib.sh 
+    && sh /www/server/panel/install/lib.sh \
+    && chmod +x /bt.sh \
+    && chmod +x /init_mysql.sh
     
-# 配置宝塔面板安全入口和用户名及密码，以及 SSH 密码
-RUN echo btpanel | bt 6 \
-    && echo btpaneldocker | bt 5 \
-    && echo "/btpanel" > /www/server/panel/data/admin_path.pl \
-    && echo "root:btpaneldocker" | chpasswd
-
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 
 # 暴漏特定端口
