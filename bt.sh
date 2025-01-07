@@ -10,7 +10,7 @@ O_pl=$(cat /www/server/panel/data/o.pl)
 
 backup_database() {
   if [ -d "${Data_Path}" ] && [ ! -z "$(ls -A ${Data_Path})" ]; then
-    if [ ! -d /www/server/mysql ] || [ -z "$(ls -A /www/server/mysql)" ]; then
+    if [ ! -d "${Setup_Path}" ] || [ -z "$(ls -A ${Setup_Path})" ]; then
       timestamp=$(date +"%Y%m%d%H%M%S")
       tar czf /www/server/data_backup_$timestamp.tar.gz -C ${Data_Path} .
     fi
