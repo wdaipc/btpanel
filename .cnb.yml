@@ -5,6 +5,32 @@ $:
       docker:
         build: 
           dockerfile: .ide/Dockerfile
+  issue.open:
+    - stages:
+        - name: issue-notice
+          image: tencentcom/wecom-message
+          imports: https://cnb.cool/btpanel/secret/-/blob/main/wework-robots.yml
+          settings:
+            robot: $CNB_WARRIOR_ROBOT
+            msgType: markdown
+            content: |
+              > **有人提issue啦**
+              > **标  题:** $CNB_ISSUE_TITLE
+              > **发起人:** $CNB_ISSUE_OWNER
+              > **查看:** [$CNB_EVENT_URL]($CNB_EVENT_URL)
+  issue.reopen:
+    - stages:
+        - name: issue-notice
+          image: tencentcom/wecom-message
+          imports: https://cnb.cool/btpanel/secret/-/blob/main/wework-robots.yml
+          settings:
+            robot: $CNB_WARRIOR_ROBOT
+            content: |
+              > **$CNB_BUILD_USER重新打开了一个issue**
+              > **标  题:** $CNB_ISSUE_TITLE
+              > **发起人:** $CNB_ISSUE_OWNER
+              > **查  看:** [$CNB_EVENT_URL]($CNB_EVENT_URL)
+
   push:
     - runner:
         tags: cnb:arch:amd64
