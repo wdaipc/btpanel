@@ -5,7 +5,7 @@ RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debi
     && apt update && apt upgrade -y \
     && apt install -y \
     locales \
-    wget openssh-server cmake make gcc g++ autoconf sudo curl dos2unix build-essential \
+    wget iproute2 openssh-server cmake make gcc g++ autoconf sudo curl dos2unix build-essential \
     && apt autoremove -y \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* 
