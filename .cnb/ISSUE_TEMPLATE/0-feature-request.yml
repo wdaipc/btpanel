@@ -1,0 +1,22 @@
+name: feature request
+description: 该模版用于提需求
+labels: 
+  - feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢用户提出的改进 宝塔面板Docker镜像 的想法。
+
+        请尽可能填写以下内容
+  - type: textarea
+    attributes:
+      label: 这个特性将解决什么问题？
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 设想的解决方案？如有
+  - type: textarea
+    attributes:
+      label: 您考虑过哪些替代方案？如有

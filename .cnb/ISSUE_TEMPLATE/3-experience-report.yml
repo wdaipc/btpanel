@@ -1,0 +1,13 @@
+name: experience improve
+description: 该模版用于反馈体验问题
+labels: 
+  - 体验优化
+body:
+  - type: textarea
+    attributes:
+      label: 描述一下体验不好的点
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 优化建议？如有
