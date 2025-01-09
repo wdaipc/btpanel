@@ -8,7 +8,7 @@ body:
       label: 提供报错说明&截图？如有，可更快的确认问题
     validations:
       required: true
-  - type: input
+  - type: textarea
     attributes:
       label: 提供一下报错日志？如环境/插件安装日志，或其他报错信息
     validations:
