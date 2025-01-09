@@ -12,7 +12,7 @@ $:
         - docker
       imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
-        IMAGE_TAG: btpanel/baota:lnmp_debian12-linux-amd64
+        IMAGE_TAG: btpanel/baota:lnmp-linux-amd64
       stages:
         - name: docker login
           script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
@@ -27,17 +27,15 @@ $:
           
     - runner:
         tags: cnb:arch:arm64:v8
-        cpus: 16
       services:
         - docker
       imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
-        IMAGE_TAG: btpanel/baota:lnmp_debian12-linux-arm64
+        IMAGE_TAG: btpanel/baota:lnmp-linux-arm64
       stages:
         - name: docker login
           script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
         - name: docker build
-          timeout: 3600s
           script: docker build -t ${IMAGE_TAG} -f ./arm64/Dockerfile ./arm64
         - name: docker push
           script: docker push ${IMAGE_TAG}
@@ -46,11 +44,14 @@ $:
           options:
             key: build-arm64
 
-    - services:
+    - runner:
+        tags: cnb:arch:amd64
+        cpus: 2
+      services:
         - docker
       imports: https://cnb.cool/btpanel/secret/-/blob/main/docker.yml
       env:
-        IMAGE_TAG: btpanel/baota:lnmp_debian12
+        IMAGE_TAG: btpanel/baota:lnmp
       stages:
         - name: await the amd64
           type: cnb:await
@@ -70,3 +71,83 @@ $:
             platforms:
               - linux/amd64
               - linux/arm64
+        - name: clear
+          image: lumir/remove-dockerhub-tag
+          args:
+            - --user
+            - $DOCKER_USERNAME
+            - --password
+            - $DOCKER_PASSWD
+            - ${IMAGE_TAG}-linux-amd64
+            - ${IMAGE_TAG}-linux-arm64
+
+    - runner:
+        tags: cnb:arch:amd64
+      services:
+        - docker
+      env:
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:lnmp-linux-amd64
+      stages:
+        - name: docker login
+          script: docker login -u ${CNB_TOKEN_USER_NAME} -p "${CNB_TOKEN}" ${CNB_DOCKER_REGISTRY}
+        - name: docker build
+          script: docker build -t ${IMAGE_TAG} .
+        - name: docker push
+          script: docker push ${IMAGE_TAG}
+        - name: resolve
+          type: cnb:resolve
+          options:
+            key: cnb-build-amd64 
+          
+    - runner:
+        tags: cnb:arch:arm64:v8
+      services:
+        - docker
+      env:
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:lnmp-linux-arm64
+      stages:
+        - name: docker login
+          script: docker login -u ${CNB_TOKEN_USER_NAME} -p "${CNB_TOKEN}" ${CNB_DOCKER_REGISTRY}
+        - name: docker build
+          script: docker build -t ${IMAGE_TAG} -f ./arm64/Dockerfile ./arm64
+        - name: docker push
+          script: docker push ${IMAGE_TAG}
+        - name: resolve
+          type: cnb:resolve
+          options:
+            key: cnb-build-arm64
+
+    - runner:
+        tags: cnb:arch:amd64
+        cpus: 2
+      services:
+        - docker
+      env:
+        IMAGE_TAG: ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:lnmp
+      stages:
+        - name: await the amd64
+          type: cnb:await
+          options:
+            key: cnb-build-amd64
+        - name: await the arm64
+          type: cnb:await
+          options:
+            key: cnb-build-arm64
+        - name: manifest
+          image: cnbcool/manifest
+          settings:
+            username: $CNB_TOKEN_USER_NAME
+            password: $CNB_TOKEN
+            target: ${IMAGE_TAG}
+            template: ${IMAGE_TAG}-OS-ARCH
+            platforms:
+              - linux/amd64
+              - linux/arm64
+        - name: remove tag
+          type: artifact:remove-tag
+          options:
+            name: ${CNB_REPO_NAME}
+            tags:
+              - lnmp-linux-amd64
+              - lnmp-linux-arm64
+            type: docker
