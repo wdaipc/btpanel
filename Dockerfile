@@ -25,7 +25,7 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && bash /lnmp/nginx.sh install 1.27 \ 
     && rm -rf /lnmp \
     && rm -rf /www/server/nginx/src \
-    && echo "docker_bt_nas" > /www/server/panel/data/o.pl \
+    && echo "docker_bt_fnnas" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAwp", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* \

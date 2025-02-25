@@ -27,7 +27,6 @@ restore_panel_data() {
 }
 
 soft_start(){
-    # 扫描并启动所有服务
     init_scripts=$(ls ${init_path})
     for script in ${init_scripts}; do
         case "${script}" in
@@ -35,7 +34,6 @@ soft_start(){
             continue
             ;;
         esac
-
         ${init_path}/${script} start
     done
 
@@ -56,15 +54,12 @@ soft_start(){
 }
 
 init_mysql(){
-    if [ "${O_pl}" != "docker_btlamp_nas" ] && [ "${O_pl}" != "docker_btlnmp_nas" ];then
+    if [ "${O_pl}" != "docker_btlamp_fnnas" ] && [ "${O_pl}" != "docker_btlnmp_fnnas" ];then
         return
     fi
     if [ -d "${Data_Path}" ]; then
         check_z=$(ls "${Data_Path}")
-        echo "check_z:"
-        echo ${check_z}
         if [[ ! -z "${check_z}" ]]; then
-            echo "check_z is not empty"
             return
         fi
     fi
@@ -86,6 +81,39 @@ start_mysql(){
     fi
 }
 
+check_bt_credentials() {
+    if [ -f "/www/server/panel/data/credentials_set" ]; then
+        echo "Credentials already set. Skipping."
+        return 0
+    fi
+
+    if [ -z "$btuser" ] && [ -z "$btpwd" ]; then
+        echo "No credentials provided. Skipping."
+        return 0
+    fi
+
+    echo "Waiting for BT panel to be ready..."
+    while true; do
+        ${init_path}/bt status >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            break
+        fi
+        sleep 1
+        echo "Retrying..."
+    done
+
+    if [ -n "$btuser" ]; then
+        echo "Updating username to $btuser..."
+        echo "$btuser" | ${init_path}/bt 6 || echo "Failed to update username."
+    fi
+
+    if [ -n "$btpwd" ]; then
+        echo "Updating password..."
+        echo "$btpwd" | ${init_path}/bt 5 || echo "Failed to update password."
+    fi
+
+    touch "/www/server/panel/data/credentials_set"
+}
 
 restore_panel_data > /dev/null
 backup_database > /dev/null
@@ -93,5 +121,5 @@ is_empty_Data > /dev/null
 init_mysql > /dev/null
 start_mysql > /dev/null
 soft_start > /dev/null
-#tail -f /dev/null
+check_bt_credentials > /dev/null
 ${init_path}/bt log
