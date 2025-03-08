@@ -47,6 +47,10 @@ services:
     labels:
       createdBy: "bt_apps"
 ```
+## 如果面板需要使用Docker
+参考格式  本地docker环境挂载进面板docker使用
+- "/usr/bin/docker:/usr/bin/docker"
+- "/run/docker.sock:/run/docker.sock"
 
 ## 镜像说明
 除标注了`9.0_lts`稳定版的标签外，其他镜像均为`9.3.0/9.2.0`正式版
