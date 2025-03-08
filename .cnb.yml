@@ -68,3 +68,12 @@ $:
             platforms:
               - linux/amd64
               - linux/arm64
+        - name: clear
+          image: lumir/remove-dockerhub-tag
+          args:
+            - --user
+            - $DOCKER_USERNAME
+            - --password
+            - $DOCKER_PASSWD
+            - ${IMAGE_TAG}-linux-amd64
+            - ${IMAGE_TAG}-linux-arm64
