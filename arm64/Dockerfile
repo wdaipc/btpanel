@@ -26,7 +26,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh && dos2unix /lnmp/phpmyadmin.sh
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
     && curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
-    && sh /lnmp/nginx.sh install openresty \ 
+    && sh /lnmp/nginx.sh install 1.27 \ 
     && curl -o /lnmp/php.sh https://download.bt.cn/install/3/php.sh \
     && sh /lnmp/php.sh install 8.3 \
     && curl -o /lnmp/mysql.sh https://download.bt.cn/install/3/mysql.sh \
