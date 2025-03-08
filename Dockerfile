@@ -6,28 +6,33 @@ RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debi
     && apt install -y \
     locales \
     wget iproute2 openssh-server cmake make gcc g++ autoconf sudo curl dos2unix build-essential \
+    # 取消注释en_US.UTF-8区域设置并生成
+    && sed -i 's/^# *\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen \
     && locale-gen en_US.UTF-8 \
+    # 更新系统默认区域设置
+    && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
     && apt autoremove -y \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* 
 
+# 设置全局环境变量
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
 # 复制脚本，设置环境变量
 COPY ["bt.sh", "init_mysql.sh", "/"]
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
 
 # 转换启动脚本
 RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 
-# 下载并安装宝塔面板及 nginx
+# 下载并安装宝塔面板及nginx（保持原有逻辑）
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
     && btpip config set global.index-url https://mirrors.tencent.com/pypi/simple \
     && mkdir /lnmp \
     && curl -o /lnmp/nginx.sh https://download.bt.cn/install/3/nginx.sh \
-    && bash /lnmp/nginx.sh install 1.27 \ 
+    && bash /lnmp/nginx.sh install 1.27 \
     && rm -rf /lnmp \
     && rm -rf /www/server/nginx/src \
     && echo "docker_bt_nas" > /www/server/panel/data/o.pl \
@@ -37,9 +42,8 @@ RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && rm -rf /www/reserve_space.pl \
     && chmod +x /bt.sh \
     && chmod +x /init_mysql.sh
-    
 
-# 配置宝塔面板安全入口和用户名及密码，以及 SSH 密码
+# 配置宝塔面板安全入口和用户名及密码，以及SSH密码
 RUN echo btpanel | bt 6 \
     && echo btpaneldocker | bt 5 \
     && echo "/btpanel" > /www/server/panel/data/admin_path.pl \
@@ -52,7 +56,7 @@ RUN bt 2 \
 
 ENTRYPOINT ["/bin/sh","-c","/bt.sh"]
 
-# 暴漏特定端口
+# 暴露特定端口
 EXPOSE 22 80 443 888 3306 8888
 
 # 健康检查
