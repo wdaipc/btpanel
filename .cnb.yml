@@ -36,7 +36,7 @@ $:
         - name: docker login
           script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWD"
         - name: docker build
-          script: docker build -t ${IMAGE_TAG} -f ./arm64/Dockerfile ./arm64
+          script: docker build -t ${IMAGE_TAG} .
         - name: docker push
           script: docker push ${IMAGE_TAG}
         - name: resolve
