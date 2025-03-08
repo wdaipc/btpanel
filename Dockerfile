@@ -6,12 +6,17 @@ RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debi
     && apt install -y \
     locales \
     wget iproute2 openssh-server cmake make gcc g++ autoconf sudo curl dos2unix build-essential \
+    && locale-gen en_US.UTF-8 \
+    && update-locale LANG=en_US.UTF-8 \
     && apt autoremove -y \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* 
 
-# 复制脚本
+# 复制脚本，设置环境变量
 COPY ["bt.sh", "init_mysql.sh", "/"]
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # 转换启动脚本
 RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
