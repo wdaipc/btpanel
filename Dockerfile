@@ -5,7 +5,7 @@ RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list \
     && apt update && apt upgrade -y \
     && apt install -y \
     locales \
-    wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
+    wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf ca-certificates \
     libsodium-dev libonig-dev libssh2-1-dev libc-ares-dev libaio-dev sudo curl dos2unix \
     build-essential re2c cron bzip2 libzip-dev libc6-dev bison file rcconf flex vim m4 gawk less cpp binutils \
     diffutils unzip tar libbz2-dev libncurses5 libncurses5-dev libtool libevent-dev libssl-dev libsasl2-dev \
