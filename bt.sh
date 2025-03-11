@@ -86,7 +86,6 @@ start_mysql(){
     fi
 }
 
-
 restore_panel_data > /dev/null
 backup_database > /dev/null
 is_empty_Data > /dev/null
