@@ -41,9 +41,7 @@ services:
       - "22022:22" # SSH服务端口，默认22022，不需要暴露到容器外可删除
       - "32888:888" # PHPMyAdmin服务端口，默认32888，不需要暴露到容器外可删除
     volumes:
-      - "/www/wwwroot:/www/wwwroot" # 持久化存储宝塔面板网站数据，默认/www/wwwroot，可根据实际情况调整目录
-      - "/www/data:/www/server/data" # 持久化存储MySQL数据，默认/www/data，可根据实际情况调整目录
-      - "/www/vhost:/www/server/panel/vhost" # 持久化存储MySQL数据，默认/www/data，可根据实际情况调整目录
+      - "/www:/www" # 持久化存储宝塔面板数据，默认/www，可根据实际情况调整目录
     labels:
       createdBy: "bt_apps"
 ```
