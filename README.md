@@ -10,15 +10,11 @@
 ### Docker Run
 - 复制下方的命令，无需映射端口使用本地网络直接部署宝塔面板docker镜像
 ```bash
-docker run -d --restart unless-stopped --name baota --net=host -v ~/website_data:/www/wwwroot -v ~/mysql_data:/www/server/data -v /vhost:/www/server/panel/vhost docker.cnb.cool/btpanel/btpanel:latest
+docker run -d --restart unless-stopped --name baota --net=host -v ~/www:/www docker.cnb.cool/btpanel/btpanel:latest
 ```
 - 复制下方的命令，映射指定端口部署宝塔面板docker镜像
 ```bash
-docker run -d --restart unless-stopped --name baota -p 8888:8888 -p 22:22 -p 443:443 -p 80:80 -p 888:888 -v ~/website_data:/www/wwwroot -v ~/mysql_data:/www/server/data -v ~/vhost:/www/server/panel/vhost docker.cnb.cool/btpanel/btpanel:latest
-```
-- 复制下方的命令，映射指定端口部署宝塔面板docker镜像，并挂载整个`www`目录到宿主机，当前仅适用于`nas`标签
-```bash
-docker run -d --restart unless-stopped --name baota -p 8888:8888 -p 22:22 -p 443:443 -p 80:80 -p 888:888 -v ~/website_data:/www docker.cnb.cool/btpanel/btpanel:nas
+docker run -d --restart unless-stopped --name baota -p 8888:8888 -p 22:22 -p 443:443 -p 80:80 -p 888:888 -v ~/www:/www docker.cnb.cool/btpanel/btpanel:latest
 ```
 
 ### Docker Compose
