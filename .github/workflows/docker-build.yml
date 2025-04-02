@@ -16,6 +16,21 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: lnmp
+          
+      - name: Check Dockerfile existence
+        run: |
+          if [ ! -f "./Dockerfile" ]; then
+            echo "Root Dockerfile not found!"
+            exit 1
+          fi
+          if [ ! -f "./arm64/Dockerfile" ]; then
+            echo "ARM64 Dockerfile not found!"
+            exit 1
+          fi
+
+      - name: Print directory structure
+        run: |
+          ls -R
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
