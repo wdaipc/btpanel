@@ -1,8 +1,7 @@
 FROM debian:bookworm
 
-# 切换 Debian 镜像源为腾讯云源，更新包列表并安装依赖
-RUN sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources \
-    && apt update && apt upgrade -y \
+# 切换 Debian 镜像源为腾讯云源，更新包列表并安装依赖 sed -i 's/deb.debian.org/mirrors.tencent.com/g' /etc/apt/sources.list.d/debian.sources \& 
+RUN apt update && apt upgrade -y \
     && apt install -y \
     locales \
     wget iproute2 openssh-server libgd-dev cmake make gcc g++ autoconf \
@@ -24,7 +23,7 @@ RUN dos2unix /bt.sh && dos2unix /init_mysql.sh
 # 下载并安装宝塔面板及 lnmp 环境
 RUN curl -sSO https://download.bt.cn/install/install_panel.sh \
     && echo y | bash install_panel.sh -P 8888 --ssl-disable \
-    && btpip config set global.index-url https://mirrors.tencent.com/pypi/simple \
+    #&& btpip config set global.index-url https://mirrors.tencent.com/pypi/simple \
     && rm -rf /www/server/data/* \
     && echo "docker_bt_d12" > /www/server/panel/data/o.pl \
     && echo '["memuA", "memuAsite", "memuAdatabase", "memuAcontrol", "memuAfiles", "memuAlogs", "memuAxterm", "memuAcrontab", "memuAsoft", "memuAconfig", "dologin", "memu_btwaf", "memuAssl"]' > /www/server/panel/config/show_menu.json \
