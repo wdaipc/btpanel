@@ -4,33 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '宝塔版本号'
+        description: '宝塔版本'
         required: false
         default: '9.5.0'
 
 jobs:
-  build-and-push:
+  build-amd64:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           ref: lnmp
-          
-      - name: Check Dockerfile existence
-        run: |
-          if [ ! -f "./Dockerfile" ]; then
-            echo "Root Dockerfile not found!"
-            exit 1
-          fi
-          if [ ! -f "./arm64/Dockerfile" ]; then
-            echo "ARM64 Dockerfile not found!"
-            exit 1
-          fi
-
-      - name: Print directory structure
-        run: |
-          ls -R
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -48,16 +33,77 @@ jobs:
         id: vars
         run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker images
-        uses: docker/build-push-action@v4
+      - name: Build and push amd64 image
+        run: |
+          docker buildx build --file ./Dockerfile --platform linux/amd64 \
+            --tag ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-amd64 \
+            --tag ldxw/btpanel:latest-amd64 \
+            --push .
+
+  build-arm64:
+    runs-on: ubuntu-latest
+    needs: build-amd64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ldxw/btpanel:latest
-            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}
-          file: |
-            linux/amd64: ./Dockerfile
-            linux/arm64: ./arm64/Dockerfile
+          ref: lnmp
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set version variable
+        id: vars
+        run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+
+      - name: Build and push arm64 image
+        run: |
+          docker buildx build --file ./arm64/Dockerfile --platform linux/arm64 \
+            --tag ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-arm64 \
+            --tag ldxw/btpanel:latest-arm64 \
+            --push .
+
+  create-and-push-manifest:
+    runs-on: ubuntu-latest
+    needs: [build-amd64, build-arm64]
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set version variable
+        id: vars
+        run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+
+      - name: Create manifest
+        run: |
+          docker manifest create ldxw/btpanel:${{ steps.vars.outputs.VERSION }} \
+            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-amd64 \
+            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-arm64
+          docker manifest create ldxw/btpanel:latest \
+            ldxw/btpanel:latest-amd64 \
+            ldxw/btpanel:latest-arm64
+
+      - name: Annotate manifest
+        run: |
+          docker manifest annotate ldxw/btpanel:${{ steps.vars.outputs.VERSION }} \
+            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-arm64 --os linux --arch arm64
+          docker manifest annotate ldxw/btpanel:latest \
+            ldxw/btpanel:latest-arm64 --os linux --arch arm64
+
+      - name: Push manifest
+        run: |
+          docker manifest push ldxw/btpanel:${{ steps.vars.outputs.VERSION }}
+          docker manifest push ldxw/btpanel:latest
     
