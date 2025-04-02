@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '宝塔版本'
+        description: '宝塔版本号'
         required: false
         default: '9.5.0'
 
@@ -12,98 +12,95 @@ jobs:
   build-amd64:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 检出代码
         uses: actions/checkout@v3
         with:
           ref: lnmp
 
-      - name: Set up QEMU
+      - name: 设置 QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Set up Docker Buildx
+      - name: 设置 Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Login to Docker Hub
+      - name: 登录 Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set version variable
+      - name: 设置版本变量
         id: vars
         run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
 
-      - name: Build and push amd64 image
+      - name: 构建并推送 amd64 架构镜像
         run: |
           docker buildx build --file ./Dockerfile --platform linux/amd64 \
-            --tag ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-amd64 \
-            --tag ldxw/btpanel:latest-amd64 \
+            --tag ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-lnmp-amd64 \
+            --tag ldxw/btpanel:latest-lnmp-amd64 \
             --push .
 
   build-arm64:
     runs-on: ubuntu-latest
     needs: build-amd64
     steps:
-      - name: Checkout
+      - name: 检出代码
         uses: actions/checkout@v3
         with:
           ref: lnmp
 
-      - name: Set up QEMU
+      - name: 设置 QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Set up Docker Buildx
+      - name: 设置 Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Login to Docker Hub
+      - name: 登录 Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set version variable
+      - name: 设置版本变量
         id: vars
         run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
 
-      - name: Build and push arm64 image
+      - name: 构建并推送 arm64 架构镜像
         run: |
           docker buildx build --file ./arm64/Dockerfile --platform linux/arm64 \
-            --tag ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-arm64 \
-            --tag ldxw/btpanel:latest-arm64 \
+            --tag ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-lnmp-arm64 \
+            --tag ldxw/btpanel:latest-lnmp-arm64 \
             --push .
 
   create-and-push-manifest:
     runs-on: ubuntu-latest
     needs: [build-amd64, build-arm64]
     steps:
-      - name: Login to Docker Hub
+      - name: 登录 Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set version variable
+      - name: 设置版本变量
         id: vars
         run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
 
-      - name: Create manifest
+      - name: 创建并推送版本化标签的清单
         run: |
-          docker manifest create ldxw/btpanel:${{ steps.vars.outputs.VERSION }} \
-            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-amd64 \
-            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-arm64
-          docker manifest create ldxw/btpanel:latest \
-            ldxw/btpanel:latest-amd64 \
-            ldxw/btpanel:latest-arm64
+          docker manifest create ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-lnmp \
+            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-lnmp-amd64 \
+            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-lnmp-arm64
+          docker manifest annotate ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-lnmp \
+            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-lnmp-arm64 --os linux --arch arm64
+          docker manifest push ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-lnmp
 
-      - name: Annotate manifest
+      - name: 创建并推送 latest-lnmp 标签的清单
         run: |
-          docker manifest annotate ldxw/btpanel:${{ steps.vars.outputs.VERSION }} \
-            ldxw/btpanel:${{ steps.vars.outputs.VERSION }}-arm64 --os linux --arch arm64
-          docker manifest annotate ldxw/btpanel:latest \
-            ldxw/btpanel:latest-arm64 --os linux --arch arm64
-
-      - name: Push manifest
-        run: |
-          docker manifest push ldxw/btpanel:${{ steps.vars.outputs.VERSION }}
-          docker manifest push ldxw/btpanel:latest
+          docker manifest create ldxw/btpanel:latest-lnmp \
+            ldxw/btpanel:latest-lnmp-amd64 \
+            ldxw/btpanel:latest-lnmp-arm64
+          docker manifest annotate ldxw/btpanel:latest-lnmp \
+            ldxw/btpanel:latest-lnmp-arm64 --os linux --arch arm64
+          docker manifest push ldxw/btpanel:latest-lnmp
     
